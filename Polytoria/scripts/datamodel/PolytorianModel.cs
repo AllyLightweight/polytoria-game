@@ -319,6 +319,7 @@ public sealed partial class PolytorianModel : CharacterModel
 		Animator.ImportAnimationRaw("emote_sit", "Sit");
 
 		Animator.ImportOneShotAnimationRaw("emote_wave", "Wave");
+		Animator.ImportOneShotAnimationRaw("emote_point", "Point");
 		/*
 		Animator.ImportOneShotAnimationRaw("poly_welcome", "polytorian_2/welcome");
 		Animator.ImportOneShotAnimationRaw("avataredit_pose1", "polytorian_2/pose1");

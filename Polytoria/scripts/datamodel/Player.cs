@@ -312,7 +312,7 @@ public sealed partial class Player : NPC
 	[
 		"wave",
 		"dance",
-		//"helicopter", // disabled for now, waiting for animation
+		"helicopter",
 		"sit",
 	];
 
@@ -321,7 +321,7 @@ public sealed partial class Player : NPC
 	[
 		"wave",
 		"dance",
-		//"helicopter",  // disabled for now, waiting for animation
+		"helicopter",
 		"sit",
 		"point",
 	];
