@@ -389,17 +389,17 @@ public static partial class PackedFormat
 		}
 	}
 
-	public static CreatorProjectMetadata ReadProjectMetadata(string content)
-	{
-		return JsonSerializer.Deserialize(content, ProjectJSONGenerationContext.Default.CreatorProjectMetadata);
-	}
-
 	public struct AddonData
 	{
 		public AddonMetadata Metadata;
 		public Script EntryScript;
 	}
 #endif
+
+	public static CreatorProjectMetadata ReadProjectMetadata(string content)
+	{
+		return JsonSerializer.Deserialize(content, ProjectJSONGenerationContext.Default.CreatorProjectMetadata);
+	}
 
 	public static WorldData LoadPackedWorld(World root, byte[] data, string? entryPath = null)
 	{
