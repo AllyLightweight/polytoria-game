@@ -52,6 +52,9 @@ public sealed partial class InsertService : Instance
 		npc.Character = ptm;
 		ptm.Name = "Character";
 		ptm.Parent = npc;
+		ptm.LocalPosition = Vector3.Zero;
+		ptm.LocalRotation = Vector3.Zero;
+		ptm.LocalSize = Vector3.One;
 		ptm.SetNetworkAuthority(npc.NetworkAuthority, false);
 		ptm.Animator?.SetNetworkAuthority(owner, false);
 
@@ -67,6 +70,10 @@ public sealed partial class InsertService : Instance
 		jumpSound.Loop = false;
 		jumpSound.PlayInWorld = true;
 		jumpSound.SetNetworkAuthority(owner, false);
+
+		jumpSound.LocalPosition = Vector3.Zero;
+		jumpSound.LocalRotation = Vector3.Zero;
+		jumpSound.LocalSize = Vector3.One;
 	}
 
 	[ScriptMethod]
