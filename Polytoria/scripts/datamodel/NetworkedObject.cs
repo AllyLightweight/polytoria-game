@@ -1366,6 +1366,7 @@ public partial class NetworkedObject : IScriptObject
 		_isReplicating = false;
 		try
 		{
+			_lastSyncedValues[prop.Name] = value;
 			prop.SetValue(this, value);
 		}
 		catch (TargetInvocationException ex) when (ex.InnerException is InvalidOperationException)
