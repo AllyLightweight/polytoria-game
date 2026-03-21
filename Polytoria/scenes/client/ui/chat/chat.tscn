@@ -283,7 +283,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_m8q8u")
 [node name="ChatLayout" type="VBoxContainer" parent="Point/Panel/Layout/Chat" unique_id=133232772]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 10
 theme_override_constants/separation = 0
 alignment = 2
 
