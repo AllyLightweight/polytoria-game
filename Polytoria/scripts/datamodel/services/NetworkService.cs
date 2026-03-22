@@ -395,6 +395,7 @@ public sealed partial class NetworkService : Instance
 			};
 			_ = PolyServerAPI.LogServerEvent(ServerEventType.ClientConnected, data);
 		}
+		OnPlayerChanged();
 	}
 
 	private void OnPlayerRemoved(Player player)
@@ -407,6 +408,12 @@ public sealed partial class NetworkService : Instance
 			};
 			_ = PolyServerAPI.LogServerEvent(ServerEventType.ClientDisconnected, data);
 		}
+		OnPlayerChanged();
+	}
+
+	private void OnPlayerChanged()
+	{
+		NetInstance?.AdaptBandwidth(_players.PlayersCount);
 	}
 
 	private async void OnPeerConnected(int peerID)

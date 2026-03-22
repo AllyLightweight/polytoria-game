@@ -21,6 +21,7 @@ public class NetworkInstance
 	private const ENetConnection.CompressionMode CompressionMode = ENetConnection.CompressionMode.Zlib;
 	private const int BandwidthInLimit = 0;
 	private const int BandwidthOutLimit = 30 * 1024;
+	private const int BandwidthPerPlayer = 50 * 1024; // 50 KB/s per player
 	private long _lastMessageTicks = DateTime.UtcNow.Ticks;
 
 	private const int DefaultCapacity = 67;
@@ -83,6 +84,15 @@ public class NetworkInstance
 		_peer.ConnectToHost(address, port);
 
 		PostPeerCreate();
+	}
+
+	/// <summary>
+	/// Adapt server bandwidth to player count
+	/// </summary>
+	/// <param name="playerCount"></param>
+	public void AdaptBandwidth(int playerCount)
+	{
+		_peer.BandwidthLimit(0, playerCount * BandwidthPerPlayer);
 	}
 
 	private void PostPeerCreate()
