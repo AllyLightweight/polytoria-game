@@ -171,6 +171,8 @@ public static partial class PolyFormat
 			}
 
 			context.IsRootHint = true;
+
+			// No need same name checking on models
 			context.DoParentCheck = false;
 			context.InsertChild = false;
 
@@ -230,7 +232,7 @@ public static partial class PolyFormat
 				// Check if is extra
 				if (item.ModelRoot == to)
 				{
-					item.Delete();
+					item.DeleteNow();
 				}
 			}
 
@@ -238,7 +240,8 @@ public static partial class PolyFormat
 
 			PolyObject targetObj = data.Objects[0];
 
-			context.DoParentCheck = true;
+			// No need same name checking on models
+			context.DoParentCheck = false;
 
 			foreach (PolyObject item in targetObj.Children)
 			{
@@ -340,7 +343,7 @@ public static partial class PolyFormat
 		}
 		else
 		{
-			if (loadContext.DoParentCheck && parent != null && existing != null && existing is NetworkedObject existingObj)
+			if (loadContext.DoParentCheck && existing is NetworkedObject existingObj)
 			{
 				netObj = existingObj;
 			}
@@ -356,7 +359,11 @@ public static partial class PolyFormat
 			netObj = Globals.LoadNetworkedObject("MissingInstance");
 		}
 
-		if (netObj == null) return null;
+		if (netObj == null)
+		{
+			PT.PrintWarn("[PF] [WARN] netObj is null");
+			return null;
+		}
 
 		if (isModelRoot && netObj is Instance objRoot)
 		{
