@@ -3,6 +3,7 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using Godot;
+using MemoryPack;
 using Polytoria.Attributes;
 using Polytoria.Datamodel;
 using Polytoria.Datamodel.Data;
@@ -13,6 +14,7 @@ using Polytoria.Utils.DTOs;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -23,6 +25,8 @@ namespace Polytoria.Networking.Synchronizers;
 [Internal]
 public sealed partial class NetworkPropSync : Instance
 {
+	private const double BatchInterval = 0.05;
+
 	internal NetworkService NetService = null!;
 
 	// Queue of pending prop updates (waiting for their NetworkedObject to spawn)
@@ -31,11 +35,32 @@ public sealed partial class NetworkPropSync : Instance
 	// Queue of pending references (waiting for recipient to spawn)
 	public readonly Dictionary<NetPropNetworkedObjectRef, NetworkedObject> PendingRefs = [];
 
+	// Batch broadcasts list
+	private readonly List<BatchBroadcastData> _batchBroadcasts = [];
+	private double _batchTimer = 0.0;
+
 	private static readonly bool _useNetworkLog = false;
 
 	static NetworkPropSync()
 	{
 		_useNetworkLog = OS.HasFeature("netlog");
+	}
+
+	public override void Process(double delta)
+	{
+		base.Process(delta);
+		if (NetService.IsServer)
+		{
+			_batchTimer += delta;
+
+			if (_batchTimer >= BatchInterval)
+			{
+				if (_batchBroadcasts.Count > 0)
+					BroadcastBatchedProps();
+				_batchBroadcasts.Clear();
+				_batchTimer = 0.0;
+			}
+		}
 	}
 
 	public static byte[] SerializePropValue(object? propValue)
@@ -262,7 +287,7 @@ public sealed partial class NetworkPropSync : Instance
 		string netID = netObj.NetworkedObjectID;
 		byte[] data = SerializePropValue(propValue);
 
-		BroadcastPropUpdateRaw(netID, propName, data, unreliable);
+		_batchBroadcasts.Add(new() { NetID = netID, PropName = propName, PropValueRaw = data, IsUnreliable = unreliable, ExcludePeer = -1 });
 	}
 
 	public void BroadcastPropUpdateRaw(string netID, string propName, byte[] data, bool unreliable, int excludePeer = -1)
@@ -399,7 +424,7 @@ public sealed partial class NetworkPropSync : Instance
 			if (hasAuthority)
 			{
 				netObj.RecvPropUpdate(propName, propValueRaw);
-				BroadcastPropUpdateRaw(netObj.NetworkedObjectID, propName, propValueRaw, isUnreliable, peerID);
+				_batchBroadcasts.Add(new() { NetID = netObj.NetworkedObjectID, PropName = propName, PropValueRaw = propValueRaw, IsUnreliable = isUnreliable, ExcludePeer = peerID });
 			}
 		}
 	}
@@ -466,4 +491,100 @@ public sealed partial class NetworkPropSync : Instance
 		}
 	}
 
+	// Broadcast Batched Props to peers
+	private void BroadcastBatchedProps()
+	{
+		if (_batchBroadcasts.Count == 0) return;
+
+		var groups = _batchBroadcasts
+			.GroupBy(b => (b.ExcludePeer, b.IsUnreliable));
+
+		foreach (var group in groups)
+		{
+			var payload = BuildPropPayload([.. group]);
+			var (excludePeer, isUnreliable) = group.Key;
+			BroadcastBatchPropExcludePeer(payload, isUnreliable, excludePeer);
+		}
+
+		_batchBroadcasts.Clear();
+	}
+
+	private void BroadcastBatchPropExcludePeer(BatchPropObjectData[] payload, bool unreliable, int excludePeer)
+	{
+		var rpcName = unreliable ? nameof(NetRecvBatchedPropsUnreliable) : nameof(NetRecvBatchedPropsReliable);
+		var data = SerializeUtils.Serialize(payload);
+
+		foreach (int peerID in NetService.NetInstance.PeerIds)
+		{
+			if (peerID != excludePeer)
+				RpcId(peerID, rpcName, data);
+		}
+	}
+
+	// Groups flat broadcast list into per-NetID objects
+	private static BatchPropObjectData[] BuildPropPayload(List<BatchBroadcastData> broadcasts)
+	{
+		return [.. broadcasts
+			.GroupBy(b => b.NetID)
+			.Select(g => new BatchPropObjectData
+			{
+				NetID = g.Key,
+				Props = [.. g.Select(b => new BatchPropEntry
+				{
+					PropName = b.PropName,
+					PropValueRaw = b.PropValueRaw
+				})]
+			})];
+	}
+
+	[NetRpc(AuthorityMode.Authority, TransferMode = TransferMode.Reliable)]
+	private void NetRecvBatchedPropsReliable(byte[] propsRaw)
+	{
+		NetRecvBatchedProps(propsRaw);
+	}
+
+	[NetRpc(AuthorityMode.Authority, TransferMode = TransferMode.Unreliable)]
+	private void NetRecvBatchedPropsUnreliable(byte[] propsRaw)
+	{
+		NetRecvBatchedProps(propsRaw);
+	}
+
+	private void NetRecvBatchedProps(byte[] propsRaw)
+	{
+		var objects = SerializeUtils.Deserialize<BatchPropObjectData[]>(propsRaw);
+		if (objects == null) return;
+
+		foreach (var obj in objects)
+		{
+			if (NetService.Root.GetNetObjectFromID(obj.NetID) is not { } netObj) continue;
+
+			foreach (var prop in obj.Props)
+			{
+				netObj.RecvPropUpdate(prop.PropName, prop.PropValueRaw);
+			}
+		}
+	}
+
+	[MemoryPackable]
+	private partial struct BatchPropObjectData
+	{
+		public string NetID;
+		public BatchPropEntry[] Props;
+	}
+
+	[MemoryPackable]
+	private partial struct BatchPropEntry
+	{
+		public string PropName;
+		public byte[] PropValueRaw;
+	}
+
+	private struct BatchBroadcastData
+	{
+		public string NetID;
+		public string PropName;
+		public byte[] PropValueRaw;
+		public bool IsUnreliable;
+		public int ExcludePeer;
+	}
 }
