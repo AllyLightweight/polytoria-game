@@ -71,6 +71,8 @@ public sealed partial class InsertService : Instance
 		jumpSound.PlayInWorld = true;
 		jumpSound.SetNetworkAuthority(owner, false);
 
+		npc.JumpSound = jumpSound;
+
 		jumpSound.LocalPosition = Vector3.Zero;
 		jumpSound.LocalRotation = Vector3.Zero;
 		jumpSound.LocalSize = Vector3.One;
