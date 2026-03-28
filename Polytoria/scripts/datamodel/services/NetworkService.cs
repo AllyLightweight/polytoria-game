@@ -270,6 +270,8 @@ public sealed partial class NetworkService : Instance
 
 				if (originFromPeer == LocalPeerID) return;
 
+				if (Globals.UseLogRPC) PT.Print($"[{LocalPeerID}] Received {md.Name} from {originFromPeer}");
+
 				netObj.RemoteSenderId = originFromPeer;
 				try
 				{
