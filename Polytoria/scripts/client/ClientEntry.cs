@@ -12,7 +12,6 @@ using Polytoria.Datamodel;
 using Polytoria.Datamodel.Services;
 using Polytoria.Schemas.API;
 using Polytoria.Shared;
-using Polytoria.Shared.AssetLoaders;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -175,12 +174,6 @@ public sealed partial class ClientEntry : Node3D
 		{
 			DisplayServer.ScreenSetOrientation(DisplayServer.ScreenOrientation.Landscape);
 			DisplayServer.WindowSetMode(DisplayServer.WindowMode.Fullscreen);
-		}
-
-		// If is server, don't load assets
-		if (Globals.IsServerBuild)
-		{
-			AssetLoader.Singleton.UseAssetLoader = false;
 		}
 
 		// Setup essentials 
