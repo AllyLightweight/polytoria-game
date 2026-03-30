@@ -15,6 +15,9 @@ obj/
 # Debug symbol files
 *.pdb
 
+# dotnet-trace files
+*.nettrace
+
 # User-specific MSBuild overrides
 *.csproj.user
 
