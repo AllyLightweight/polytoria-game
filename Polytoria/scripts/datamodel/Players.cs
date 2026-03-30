@@ -215,11 +215,4 @@ public sealed partial class Players : Instance
 			plr.AdminKick();
 		}
 	}
-
-	private struct AuthenticationData
-	{
-		public string UserID = null!;
-
-		public AuthenticationData() { }
-	}
 }
