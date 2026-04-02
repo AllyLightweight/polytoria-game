@@ -29,6 +29,7 @@ public sealed partial class Text3D : Dynamic
 
 	private float _fontSize = 16;
 	private bool _useRichText = false;
+	private bool _shaded = false;
 
 	private TextHorizontalAlignmentEnum _horizontalAlignment = TextHorizontalAlignmentEnum.Center;
 	private TextVerticalAlignmentEnum _verticalAlignment = TextVerticalAlignmentEnum.Middle;
@@ -235,6 +236,19 @@ public sealed partial class Text3D : Dynamic
 
 			_label3D.Visible = !value;
 			_sprite3D.Visible = value;
+		}
+	}
+
+	[Editable, ScriptProperty, DefaultValue(false)]
+	public bool Shaded
+	{
+		get => _shaded;
+		set
+		{
+			_shaded = value;
+
+			_label3D.Shaded = value;
+			_sprite3D.Shaded = value;
 		}
 	}
 
