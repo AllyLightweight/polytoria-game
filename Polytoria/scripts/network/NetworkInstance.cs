@@ -20,6 +20,7 @@ namespace Polytoria.Networking;
 public class NetworkInstance
 {
 	private const float SilenceTimeoutSeconds = 5.0f;
+	private const int DataChannelAuthTimeoutMs = 10000;
 	private const ENetConnection.CompressionMode CompressionMode = ENetConnection.CompressionMode.Zlib;
 	private const int BandwidthInLimit = 0;
 	private const int BandwidthOutLimit = 30 * 1024;
@@ -378,7 +379,13 @@ public class NetworkInstance
 							string token = splited[0];
 							string selfID = splited[1];
 							_localPeerID = int.Parse(selfID);
-							DataClient?.SendAuthenticate(token, _localPeerID).Wait();
+							bool? authDone = DataClient?.SendAuthenticate(token, _localPeerID).Wait(DataChannelAuthTimeoutMs);
+							if (authDone != true)
+							{
+								// Client error !!
+								ClientError?.Invoke(NetInstanceErrorEnum.DataChannelAuthFailure);
+								ClientDisconnected?.Invoke();
+							}
 							_dataChAuthd = true;
 							continue;
 						}
@@ -448,6 +455,7 @@ public class NetworkInstance
 	public enum NetInstanceErrorEnum
 	{
 		DataChannelConnectFailure,
+		DataChannelAuthFailure,
 		NetworkError
 	}
 }
