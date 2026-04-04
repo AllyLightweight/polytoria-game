@@ -9,7 +9,7 @@ namespace Polytoria.Scripting;
 
 public partial class ScriptSharedTable : IScriptObject
 {
-	public Dictionary<string, object> SharedDict = [];
+	internal Dictionary<string, object> SharedDict = [];
 
 	[ScriptMethod]
 	public void Clear()
@@ -64,6 +64,15 @@ public partial class ScriptSharedTable : IScriptObject
 		if (val == null)
 		{
 			SharedDict.Remove(index);
+		}
+	}
+
+	[ScriptMetamethod(ScriptObjectMetamethod.Iter)]
+	public static IEnumerable<(string, object)> Iter(ScriptSharedTable sTable)
+	{
+		foreach ((string key, object value) in sTable.SharedDict)
+		{
+			yield return (key, value);
 		}
 	}
 }
