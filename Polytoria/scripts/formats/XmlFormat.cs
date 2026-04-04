@@ -533,7 +533,7 @@ public static class XmlFormat
 			}
 			catch (Exception ex)
 			{
-				PT.PrintErr(property.Key.Name, " to ", property.Value, " set error ", ex.Message);
+				PT.PrintErr(property.Key.Name, " to ", property.Value, " set error ", ex);
 			}
 		}
 
