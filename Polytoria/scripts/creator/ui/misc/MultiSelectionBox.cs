@@ -57,20 +57,29 @@ public partial class MultiSelectionBox : Control
 
 		foreach (Instance item in allObjects)
 		{
-			if (item is Dynamic dyn && box.HasPoint(Overlay.World.CreatorContext.Freelook.Camera3D.UnprojectPosition(dyn.GDNode3D.GlobalPosition)))
+			if (item is Dynamic dyn)
 			{
-				Instance? top = dyn;
-				if (!altPressed)
-				{
-					// Get model root if ALT is not pressed
-					top = Gizmos.GetModelRoot(dyn);
-				}
-				if (top == null) continue;
-				if (top is Dynamic pd && pd.Locked) continue;
+				var camera = Overlay.World.CreatorContext.Freelook.Camera3D;
 
-				// Don't select model if alt pressed
-				if (altPressed && (top is IGroup)) continue;
-				Overlay.World.CreatorContext.Selections.Select(top);
+				// Check if position is within frustum
+				if (!camera.IsPositionInFrustum(dyn.GDNode3D.GlobalPosition))
+					continue;
+
+				if (box.HasPoint(camera.UnprojectPosition(dyn.GDNode3D.GlobalPosition)))
+				{
+					Instance? top = dyn;
+					if (!altPressed)
+					{
+						// Get model root if ALT is not pressed
+						top = Gizmos.GetModelRoot(dyn);
+					}
+					if (top == null) continue;
+					if (top is Dynamic pd && pd.Locked) continue;
+
+					// Don't select model if alt pressed
+					if (altPressed && (top is IGroup)) continue;
+					Overlay.World.CreatorContext.Selections.Select(top);
+				}
 			}
 		}
 
