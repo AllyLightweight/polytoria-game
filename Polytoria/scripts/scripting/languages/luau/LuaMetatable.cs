@@ -9,10 +9,12 @@ using Polytoria.Datamodel.Data;
 using Polytoria.Datamodel.Services;
 using Polytoria.Shared;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Script = Polytoria.Datamodel.Script;
 
@@ -566,13 +568,12 @@ public class LuaMetatable : LuaObject
 				ScriptObjectMetamethod.Concat => "__concat",
 				ScriptObjectMetamethod.Div => "__div",
 				ScriptObjectMetamethod.Eq => "__eq",
-				ScriptObjectMetamethod.IPairs => "__ipairs",
+				ScriptObjectMetamethod.Iter => "__iter",
 				ScriptObjectMetamethod.Le => "__le",
 				ScriptObjectMetamethod.Len => "__len",
 				ScriptObjectMetamethod.Lt => "__lt",
 				ScriptObjectMetamethod.Mod => "__mod",
 				ScriptObjectMetamethod.Mul => "__mul",
-				ScriptObjectMetamethod.Pairs => "__pairs",
 				ScriptObjectMetamethod.Pow => "__pow",
 				ScriptObjectMetamethod.ToString => "__tostring",
 				ScriptObjectMetamethod.Unm => "__unm",
@@ -672,6 +673,73 @@ public class LuaMetatable : LuaObject
 				try
 				{
 					val = m.Invoke(targetObject, args);
+
+					// Handle __iter: push an iterator function, nil, nil
+					if (attr.Metamethod is ScriptObjectMetamethod.Iter)
+					{
+						if (val is not IEnumerable enumerable)
+						{
+							state.PushNil();
+							return 1;
+						}
+
+						IEnumerator enumerator = enumerable.GetEnumerator();
+
+						int iteratorFunc(IntPtr iterL)
+						{
+							LuaState iterState = LuaState.FromIntPtr(iterL);
+
+							if (!enumerator.MoveNext())
+							{
+								// Signal iteration end
+								iterState.PushNil();
+								return 1;
+							}
+
+							object current = enumerator.Current;
+
+							// Unpack the tuple
+							if (current is ITuple tuple && tuple.Length == 2)
+							{
+								LangProvider.PushValueToLua(iterState, tuple[0]);
+								LangProvider.PushValueToLua(iterState, tuple[1]);
+								return 2;
+							}
+
+							// Fallback: push the whole value
+							LangProvider.PushValueToLua(iterState, current);
+							return 1;
+						}
+
+						int safeIteratorFunc(IntPtr L)
+						{
+							Exception? caughtException;
+
+							try
+							{
+								return iteratorFunc(L);
+							}
+							catch (Exception ex)
+							{
+								caughtException = ex;
+							}
+
+							if (caughtException != null)
+							{
+								LuaState state = LuaState.FromIntPtr(L);
+								return state.Error(TargetType.Name + " metamethod error " + indexer + ": " + (caughtException.InnerException?.Message ?? caughtException.Message));
+							}
+
+							return 0;
+						}
+
+						// Push: iterator function, nil (state), nil (initial control value)
+						Lua.PushCFunction(safeIteratorFunc, indexer + "_iter");
+						state.PushNil();
+						state.PushNil();
+						return 3;
+					}
+
 					LangProvider.PushValueToLua(state, val);
 					return 1;
 				}
