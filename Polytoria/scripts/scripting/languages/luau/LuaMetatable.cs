@@ -676,7 +676,7 @@ public class LuaMetatable : LuaObject
 					for (int i = 0; i < argsCount; i++)
 					{
 						var v = LangProvider.LuaToObject(state, i + 1 + additional, attr.ConvertParamsToGD);
-						if (v != null && !allowNilInArg)
+						if (v != null || allowNilInArg)
 						{
 							argList.Add(v);
 						}
