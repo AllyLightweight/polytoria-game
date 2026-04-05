@@ -432,7 +432,7 @@ public sealed partial class Menu : PanelContainer
 				new MenuButtonItem() {
 					Text = "Open Documentation",
 					Pressed = () => {
-						OS.ShellOpen("https://docs.polytoria.com/");
+						OS.ShellOpen("https://v2docs.polytoria.com/");
 					}
 				},
 				new MenuSeperatorItem(),
