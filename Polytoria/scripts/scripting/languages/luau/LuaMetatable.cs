@@ -743,9 +743,13 @@ public class LuaMetatable : LuaObject
 					LangProvider.PushValueToLua(state, val);
 					return 1;
 				}
-				catch
+				catch (Exception ex)
 				{
-					PT.PrintErr(m);
+					PT.PrintErrV(ex.Message, " argn: ", args.Length);
+					foreach (var item in args)
+					{
+						PT.PrintErrV(item, $" ({item?.GetType()})");
+					}
 					throw;
 				}
 			}
