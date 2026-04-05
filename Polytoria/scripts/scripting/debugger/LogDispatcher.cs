@@ -96,14 +96,15 @@ public partial class LogDispatcher : NetworkedObject
 					}
 				}
 			}
+			// TODO: Turn this into an event instead? Maybe dispatch it to PT
+#if CREATOR
+			DebugConsole.Singleton?.NewLog(data);
+#endif
 		});
 		if (DebugClient.ClientStarted)
 		{
 			await DebugClient.SendLogDispatch(data);
 		}
-#if CREATOR
-		DebugConsole.Singleton?.NewLog(data);
-#endif
 	}
 
 	[NetRpc(AuthorityMode.Authority, TransferMode = TransferMode.Reliable)]

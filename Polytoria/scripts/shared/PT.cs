@@ -124,7 +124,11 @@ public static class PT
 		try
 		{
 #if CREATOR
-			DebugConsole.Singleton?.NewLog(data);
+			// TODO: Turn this into an event instead?
+			CallOnMainThread(() =>
+			{
+				DebugConsole.Singleton?.NewLog(data);
+			});
 #endif
 			if (data.LogType != LogDispatcher.LogTypeEnum.Info)
 				World.Current?.ScriptService?.Logger.DispatchLog(data);
