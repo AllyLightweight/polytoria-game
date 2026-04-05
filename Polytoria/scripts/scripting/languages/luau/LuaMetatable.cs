@@ -582,6 +582,15 @@ public class LuaMetatable : LuaObject
 				_ => ""
 			};
 
+			// Allow nil in argument on some metamethods
+			// Some callers incorrectly pass nil to metamethods, unsupporting metamethods will have nil stripped from their argument list.
+			bool allowNilInArg = attr.Metamethod is
+				ScriptObjectMetamethod.ToString or
+				ScriptObjectMetamethod.Call or
+				ScriptObjectMetamethod.Index or
+				ScriptObjectMetamethod.NewIndex or
+				ScriptObjectMetamethod.Iter;
+
 			if (attr.Metamethod == ScriptObjectMetamethod.Index)
 			{
 				HasCustomIndex = true;
@@ -663,11 +672,16 @@ public class LuaMetatable : LuaObject
 				else
 				{
 					// non-params methods
-					args = new object?[argsCount];
+					List<object?> argList = new(argsCount);
 					for (int i = 0; i < argsCount; i++)
 					{
-						args[i] = LangProvider.LuaToObject(state, i + 1 + additional, attr.ConvertParamsToGD);
+						var v = LangProvider.LuaToObject(state, i + 1 + additional, attr.ConvertParamsToGD);
+						if (v != null && !allowNilInArg)
+						{
+							argList.Add(v);
+						}
 					}
+					args = [.. argList];
 				}
 
 				try
