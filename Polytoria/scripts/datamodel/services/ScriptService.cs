@@ -364,14 +364,12 @@ public sealed partial class ScriptService : Instance
 			// If conversion succeeded and result matches target type, it's convertible
 			return converted != null && targetType.IsInstanceOfType(converted);
 		}
-		catch// (Exception ex)
+		catch (Exception ex)
 		{
-			/*
-			if (Globals.IsBetaBuild)
+			if (Globals.IsInGDEditor)
 			{
 				PT.PrintErr(ex);
 			}
-			*/
 			// If conversion throws, it's not convertible
 			return false;
 		}
@@ -453,21 +451,20 @@ public sealed partial class ScriptService : Instance
 			if (targetElementType == null)
 				return null;
 
-			// Check if all elements have the same type
-			Type? firstElementType = objectArray[0]?.GetType();
-			bool allSameType = true;
+			// Check if all elements are assignable to target element type
+			bool allCompatible = true;
 
-			for (int i = 1; i < objectArray.Length; i++)
+			for (int i = 0; i < objectArray.Length; i++)
 			{
-				if (objectArray[i]?.GetType() != firstElementType)
+				if (objectArray[i] != null && !targetElementType.IsAssignableFrom(objectArray[i].GetType()))
 				{
-					allSameType = false;
+					allCompatible = false;
 					break;
 				}
 			}
 
-			// If all elements are the same type, create a typed array
-			if (allSameType && firstElementType != null)
+			// If all elements are compatible, create a typed array
+			if (allCompatible)
 			{
 				List<object> convertedList = [];
 				for (int i = 0; i < objectArray.Length; i++)
