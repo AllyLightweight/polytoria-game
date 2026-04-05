@@ -331,6 +331,11 @@ public partial class Dynamic : Instance
 			_currentTransform = _netTransform;
 			_isFirstUpdate = false;
 			_isDirty = false;
+
+			// Reset velocity on snapped
+			if (this is Physical phy)
+				phy.Velocity = Vector3.Zero;
+
 			SetLocalTransform(_currentTransform);
 		}
 		else
@@ -351,7 +356,19 @@ public partial class Dynamic : Instance
 				_isDirty = false;
 				_currentTransform = _netTransform;
 			}
-			SetLocalTransformRaw(_currentTransform);
+
+			// TODO: Could have some rework here?
+			// If using SetLocalTransformRaw directly, the part size would appear bigger than usual.
+			if (this is Part)
+			{
+				// Update raw without scale, scale is already handled via reliable update
+				GDNode3D.Transform = new Transform3D(_currentTransform.Basis.Orthonormalized(), _currentTransform.Origin);
+			}
+			else
+			{
+				// Update all on non parts, scale data might be carried over
+				SetLocalTransformRaw(_currentTransform);
+			}
 		}
 	}
 
