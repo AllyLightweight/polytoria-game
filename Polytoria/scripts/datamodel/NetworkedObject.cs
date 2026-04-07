@@ -269,19 +269,24 @@ public partial class NetworkedObject : IScriptObject
 	/// <summary>
 	/// Set to false if InvokePropReady is called manually (eg. after properties set)
 	/// </summary>
-	public bool AutoInvokeReady { get; internal set; } = true;
+	internal bool AutoInvokeReady { get; set; } = true;
 
-	public bool AutoReplicate { get; internal set; } = true;
+	/// <summary>
+	/// Set to false if prop ready should not be called on parent set (eg. when cloning)
+	/// </summary>
+	internal bool AutoInvokeReadyOnParent { get; set; } = true;
 
-	public bool ChunkBroadcastOverride { get; internal set; } = false;
+	internal bool AutoReplicate { get; set; } = true;
 
-	public bool DeletedAsChild { get; internal set; } = false;
+	internal bool ChunkBroadcastOverride { get; set; } = false;
 
-	public int AppliedSequence = 0;
+	internal bool DeletedAsChild { get; set; } = false;
 
-	public readonly HashSet<string> PendingProps = [];
+	internal int AppliedSequence = 0;
 
-	public bool IsPropReady { get; internal set; } = false;
+	internal readonly HashSet<string> PendingProps = [];
+
+	internal bool IsPropReady { get; set; } = false;
 
 	internal bool ShouldReplicate = true;
 	internal bool ShouldReplicateChild => this is not ServerHidden;
@@ -1509,6 +1514,8 @@ public partial class NetworkedObject : IScriptObject
 		bool callReady = false;
 		if (parent != null)
 		{
+			// Override invoke ready, we'll call them later in this function
+			clonedRoot.AutoInvokeReadyOnParent = false;
 			clonedRoot.SetNetworkParent(parent);
 			clonedRoot.Name = Name;
 			callReady = true;
@@ -1530,6 +1537,7 @@ public partial class NetworkedObject : IScriptObject
 
 		if (callReady)
 		{
+			// All properties are ready
 			clonedRoot.InvokePropReady();
 		}
 

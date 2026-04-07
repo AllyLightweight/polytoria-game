@@ -131,7 +131,8 @@ public partial class Instance : NetworkedObject
 					item.ReenforceName();
 				}
 
-				if (!IsPropReady)
+				// NOTE: It's kinda verbose having AutoInvokeReadyOnParent too, but AutoInvokeReady solely won't work with instance created with .New()
+				if (!IsPropReady && AutoInvokeReadyOnParent)
 				{
 					InvokePropReady();
 				}
