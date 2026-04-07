@@ -4,7 +4,6 @@
 
 using Godot;
 using Polytoria.Attributes;
-using Polytoria.Networking;
 using Polytoria.Utils;
 using System;
 
@@ -13,15 +12,10 @@ namespace Polytoria.Datamodel;
 [Abstract]
 public abstract partial class Entity : Physical
 {
-	private const float VelocitySyncInterval = 0.4f;
 	private const float MinMass = 0.01f;
 
 	internal RigidBody3D RigidBody = null!;
 	internal PhysicsMaterial PhysicsMat = null!;
-
-	private Vector3 _lastVelocity;
-	private Vector3 _lastAngularVelocity;
-	private double _velocityClock = 0;
 
 	private bool _useGravity = true;
 	private bool _isSpawn = false;
@@ -177,32 +171,6 @@ public abstract partial class Entity : Physical
 		// Unregister spawnpoint on delete
 		Root.Environment.UnregisterSpawnPoint(this);
 		base.PreDelete();
-	}
-
-	public override void PhysicsProcess(double delta)
-	{
-		if (NetTransformAuthority == Root.Network.LocalPeerID)
-		{
-			// Velocity sync clock
-			_velocityClock += delta;
-			if (_velocityClock < VelocitySyncInterval) return;
-			_velocityClock = 0;
-
-			if (!Velocity.IsEqualApprox(_lastVelocity) || !AngularVelocity.IsEqualApprox(_lastAngularVelocity))
-			{
-				_lastVelocity = Velocity;
-				_lastAngularVelocity = AngularVelocity;
-				Rpc(nameof(NetUpdateVelocity), Velocity, AngularVelocity);
-			}
-		}
-		base.PhysicsProcess(delta);
-	}
-
-	[NetRpc(AuthorityMode.Authority, TransferMode = TransferMode.UnreliableOrdered)]
-	private void NetUpdateVelocity(Vector3 velo, Vector3 angVelo)
-	{
-		Velocity = velo;
-		AngularVelocity = angVelo;
 	}
 
 	internal void UpdateCamLayer()

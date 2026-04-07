@@ -90,12 +90,10 @@ public partial class Physical : Dynamic
 			}
 
 			// Freeze the object on non physics authority
-			/*
-			if (Root.Network.NetworkMode == NetworkModeEnum.Client && Root.Network.LocalPeerID != PhysicsAuthority && ExistInNetwork)
+			if (Root.Network.NetworkMode == NetworkModeEnum.Client && Root.Network.LocalPeerID != NetTransformAuthority && ExistInNetwork)
 			{
 				finalVal = true;
 			}
-			*/
 
 			if (IsHidden)
 			{
