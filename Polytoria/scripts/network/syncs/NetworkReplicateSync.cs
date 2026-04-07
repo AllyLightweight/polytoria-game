@@ -238,7 +238,7 @@ public sealed partial class NetworkReplicateSync : Instance
 		}
 	}
 
-	public async void SendNetReplicate(NetworkedObject netObj, int peerID = 0, bool isSyncOnce = false)
+	public async void SendNetReplicate(NetworkedObject netObj, bool isSyncOnce = false)
 	{
 		// if not client, return
 		if (NetService.NetworkMode != NetworkModeEnum.Client) return;
@@ -253,7 +253,7 @@ public sealed partial class NetworkReplicateSync : Instance
 
 		if (netObj is Dynamic dyn)
 		{
-			NetService.TransformSync.SendUpdateTransform(dyn, true, peerID);
+			NetService.TransformSync.SendUpdateTransform(dyn, true);
 		}
 
 		NetReplicateData netdata = netObj.GetNetReplicateData();
@@ -261,14 +261,7 @@ public sealed partial class NetworkReplicateSync : Instance
 		netdata.isSyncOnce = isSyncOnce;
 		byte[] data = SerializeUtils.Serialize(netdata);
 
-		if (peerID != 0)
-		{
-			RpcId(peerID, nameof(NetRecvReplicate), data);
-		}
-		else
-		{
-			Rpc(nameof(NetRecvReplicate), data);
-		}
+		Rpc(nameof(NetRecvReplicate), data);
 	}
 
 	public void SendNetReplicateRemove(NetworkedObject netobj, long peerID = -1)

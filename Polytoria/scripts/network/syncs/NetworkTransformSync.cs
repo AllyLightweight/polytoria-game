@@ -24,7 +24,7 @@ public partial class NetworkTransformSync : Instance
 	private const double BatchInterval = 0.05;
 
 	internal NetworkService NetService = null!;
-	private readonly Dictionary<string, KeyValuePair<Transform3D, int>> _pendingTransforms = [];
+	private readonly Dictionary<string, PendingTransform> _pendingTransforms = [];
 
 	// Pending Transform batch update
 	private readonly Dictionary<string, PendingBatchTransform> _pendingBatchUpdate = [];
@@ -173,7 +173,7 @@ public partial class NetworkTransformSync : Instance
 		else
 		{
 			if (_useNetworkLog) { PT.Print($"[Net] [Transform] [?] {objID} Pending"); }
-			_pendingTransforms[objID] = new(transform, fromPeer);
+			_pendingTransforms[objID] = new() { Transform = transform, FromPeer = fromPeer };
 		}
 	}
 
@@ -186,13 +186,9 @@ public partial class NetworkTransformSync : Instance
 	{
 		string objID = dyn.NetworkedObjectID;
 
-		if (_pendingTransforms.TryGetValue(objID, out KeyValuePair<Transform3D, int> pending))
+		if (_pendingTransforms.TryGetValue(objID, out var pending))
 		{
-			if (!CheckDynAuthor(dyn, pending.Value))
-			{
-				return;
-			}
-			dyn.UpdateTransformFromNet(pending.Key, true, false);
+			dyn.UpdateTransformFromNet(pending.Transform, true, false);
 			_pendingTransforms.Remove(objID);
 		}
 	}
@@ -214,13 +210,13 @@ public partial class NetworkTransformSync : Instance
 		RpcId(1, nameof(NetRecvTransformOnServer), objID, current, lerpTransform);
 	}
 
-	public void BroadcastTransformFromServer(Dynamic dyn, bool lerpTransform, int excludePeer = -1)
+	public void BroadcastTransformFromServer(Dynamic dyn, bool lerpTransform, int excludePeer = -1, bool reliable = true)
 	{
 		if (!NetService.IsServer) return;
 		if (!dyn.IsNetworkReady) return;
 		string objID = dyn.NetworkedObjectID;
 
-		_pendingBatchUpdate[objID] = new(dyn, lerpTransform, excludePeer);
+		_pendingBatchUpdate[objID] = new(dyn, lerpTransform, excludePeer) { Reliable = reliable };
 	}
 
 	[NetRpc(AuthorityMode.Any, TransferMode = TransferMode.UnreliableOrdered, CallLocal = false)]
@@ -254,7 +250,7 @@ public partial class NetworkTransformSync : Instance
 			dyn.UpdateTransformFromNet(dyn.TransformNetworkPass(fromPeer, transform), false, lerpTransform);
 
 			// Add to batch pending
-			_pendingBatchUpdate[objID] = new(dyn, lerpTransform, fromPeer);
+			_pendingBatchUpdate[objID] = new(dyn, lerpTransform, fromPeer) { Reliable = false };
 		}
 	}
 
@@ -262,7 +258,8 @@ public partial class NetworkTransformSync : Instance
 	{
 		if (NetService.NetInstance == null) return;
 
-		Dictionary<int, List<BatchTransformData>> batchesByExcludedPeer = [];
+		Dictionary<int, List<BatchTransformData>> reliableBatchesByPeer = [];
+		Dictionary<int, List<BatchTransformData>> unreliableBatchesByPeer = [];
 
 		foreach (var (k, pending) in _pendingBatchUpdate)
 		{
@@ -278,6 +275,7 @@ public partial class NetworkTransformSync : Instance
 			);
 
 			int excludePeer = pending.ExcludePeer;
+			var targetBatches = pending.Reliable ? reliableBatchesByPeer : unreliableBatchesByPeer;
 
 			// Add to batches for all peers except the excluded one
 			foreach (int peerID in NetService.NetInstance.PeerIds)
@@ -285,25 +283,46 @@ public partial class NetworkTransformSync : Instance
 				if (peerID == excludePeer)
 					continue;
 
-				if (!batchesByExcludedPeer.ContainsKey(peerID))
-					batchesByExcludedPeer[peerID] = [];
+				if (!targetBatches.ContainsKey(peerID))
+					targetBatches[peerID] = [];
 
-				batchesByExcludedPeer[peerID].Add(batchData);
+				targetBatches[peerID].Add(batchData);
 			}
 		}
 
-		// Send batches to each peer
-		foreach (var (peerID, batch) in batchesByExcludedPeer)
+		// Send reliable batches
+		foreach (var (peerID, batch) in reliableBatchesByPeer)
 		{
 			if (batch.Count > 0)
 			{
-				RpcId(peerID, nameof(NetRecvBatchedTransforms), SerializeUtils.Serialize<BatchTransformData[]>([.. batch]));
+				RpcId(peerID, nameof(NetRecvBatchedTransformsReliable), SerializeUtils.Serialize<BatchTransformData[]>([.. batch]));
+			}
+		}
+
+		// Send unreliable batches
+		foreach (var (peerID, batch) in unreliableBatchesByPeer)
+		{
+			if (batch.Count > 0)
+			{
+				RpcId(peerID, nameof(NetRecvBatchedTransformsUnreliable), SerializeUtils.Serialize<BatchTransformData[]>([.. batch]));
 			}
 		}
 	}
 
+	[NetRpc(AuthorityMode.Authority, TransferMode = TransferMode.Reliable)]
+	private void NetRecvBatchedTransformsReliable(byte[] transformsRaw)
+	{
+		RecvBatchedTransforms(transformsRaw, true);
+	}
+
 	[NetRpc(AuthorityMode.Authority, TransferMode = TransferMode.UnreliableOrdered)]
-	private void NetRecvBatchedTransforms(byte[] transformsRaw)
+	private void NetRecvBatchedTransformsUnreliable(byte[] transformsRaw)
+	{
+		RecvBatchedTransforms(transformsRaw, false);
+	}
+
+	[NetRpc(AuthorityMode.Authority, TransferMode = TransferMode.UnreliableOrdered)]
+	private void RecvBatchedTransforms(byte[] transformsRaw, bool isReliable)
 	{
 		BatchTransformData[]? transforms = SerializeUtils.Deserialize<BatchTransformData[]>(transformsRaw);
 		if (transforms == null) return;
@@ -311,7 +330,7 @@ public partial class NetworkTransformSync : Instance
 		{
 			if (NetService.Root.GetNetObjectFromID(data.ObjID) is Dynamic dyn)
 			{
-				dyn.UpdateTransformFromNet(Transform3DDto.FromString(data.Transform).ToTransform3D(), false, data.Lerp);
+				dyn.UpdateTransformFromNet(Transform3DDto.FromString(data.Transform).ToTransform3D(), isReliable, data.Lerp);
 			}
 		}
 	}
@@ -321,6 +340,14 @@ public partial class NetworkTransformSync : Instance
 		public Dynamic Dyn = dyn;
 		public bool LerpTransform = lerpTransform;
 		public int ExcludePeer = excludePeer;
+		public bool Reliable = false;
+	}
+
+	private struct PendingTransform()
+	{
+		public Transform3D Transform;
+		public int FromPeer;
+		public int ToPeer = -1;
 	}
 
 	[MemoryPackable]

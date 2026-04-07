@@ -489,7 +489,7 @@ public partial class Dynamic : Instance
 		else
 		{
 			// Server broadcasts to all clients
-			Root.Network.TransformSync.BroadcastTransformFromServer(this, lerp);
+			Root.Network.TransformSync.BroadcastTransformFromServer(this, lerp, reliable: false);
 		}
 	}
 
@@ -499,7 +499,11 @@ public partial class Dynamic : Instance
 		_lerpUnreliable = false;
 		UpdateCurrentTransformCache();
 		ReliableTransformChanged?.Invoke();
-		Root.Network.TransformSync.SendUpdateTransform(this, true, 0, lerp);
+
+		if (Root.Network.IsServer)
+			Root.Network.TransformSync.BroadcastTransformFromServer(this, lerp, reliable: true);
+
+		// Cannot broadcast as reliable in client, values are ignored in client
 	}
 
 	/// <summary>

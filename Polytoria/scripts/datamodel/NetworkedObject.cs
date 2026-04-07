@@ -1116,14 +1116,14 @@ public partial class NetworkedObject : IScriptObject
 		// wait one frame so it's ready
 		Callable.From(() =>
 		{
-			SendNetReplicate(0, true);
+			SendNetReplicate(true);
 		}).CallDeferred();
 	}
 
-	private void SendNetReplicate(int peerID = 0, bool isSyncOnce = false)
+	private void SendNetReplicate(bool isSyncOnce = false)
 	{
 		if (Root.Network == null) { return; }
-		Root.Network.ReplicateSync.SendNetReplicate(this, peerID, isSyncOnce);
+		Root.Network.ReplicateSync.SendNetReplicate(this, isSyncOnce);
 		ExistInNetwork = true;
 	}
 
