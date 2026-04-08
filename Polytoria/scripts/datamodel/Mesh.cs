@@ -239,6 +239,7 @@ public sealed partial class Mesh : Entity
 						if (mat is StandardMaterial3D sm3d)
 						{
 							mat.SetMeta("_origin_clr", sm3d.AlbedoColor);
+							mat.SetMeta("_origin_hasalpha", sm3d.Transparency != BaseMaterial3D.TransparencyEnum.Disabled);
 						}
 					}
 				}
@@ -340,13 +341,15 @@ public sealed partial class Mesh : Entity
 			if (item is StandardMaterial3D sm)
 			{
 				Color origin = sm.GetMeta("_origin_clr").AsColor();
+				bool hasAlpha = sm.GetMeta("_origin_hasalpha").AsBool();
 				Color setto = _color;
 				if (!UsePartColor)
 				{
 					setto = origin;
 				}
 				sm.AlbedoColor = setto;
-				sm.Transparency = setto.A < 1 ? BaseMaterial3D.TransparencyEnum.Alpha : BaseMaterial3D.TransparencyEnum.Disabled;
+				if (!hasAlpha)
+					sm.Transparency = setto.A < 1 ? BaseMaterial3D.TransparencyEnum.Alpha : BaseMaterial3D.TransparencyEnum.Disabled;
 			}
 		}
 
