@@ -544,11 +544,11 @@ public sealed partial class TweenService : Instance
 		}
 
 		[ScriptMethod]
-		public void Cancel(bool callFinsihed = false)
+		public void Cancel(bool callFinished = false)
 		{
 			tween.Kill();
 			Canceled.Invoke();
-			if (callFinsihed)
+			if (callFinished)
 			{
 				Finished.Invoke();
 			}
