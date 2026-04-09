@@ -531,7 +531,6 @@ public partial class Dynamic : Instance
 	{
 		if (Root == null || Root?.Network == null) return;
 		_lerpUnreliable = false;
-		SetPhysicsProcess(false);
 
 		UpdateCurrentTransformCache();
 		ReliableTransformChanged?.Invoke();
