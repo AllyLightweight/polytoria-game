@@ -101,6 +101,8 @@ public partial class GUI3D : Dynamic
 		_area.MouseExited += OnAreaMouseExit;
 
 		base.Init();
+
+		ProcessAlwaysOn = true;
 	}
 
 	public override void Ready()

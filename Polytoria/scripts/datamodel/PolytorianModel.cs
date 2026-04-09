@@ -242,6 +242,8 @@ public sealed partial class PolytorianModel : CharacterModel
 		Globals.Singleton.AddChild(_helper, true);
 
 		base.Init();
+
+		ProcessAlwaysOn = true;
 	}
 
 	public override void PreDelete()
