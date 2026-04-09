@@ -3,6 +3,7 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using Godot;
+using Humanizer;
 using MemoryPack;
 using Polytoria.Attributes;
 using Polytoria.Client;
@@ -228,8 +229,10 @@ public sealed partial class NetworkService : Instance
 				List<object?> args = [];
 
 				int i = 0;
+				int msgSize = 0;
 				foreach (byte[] item in netMsg.ByteArrays)
 				{
+					msgSize += item.Length;
 					args.Add(await NetworkPropSync.DeserializePropValueAsync(item, paramTypes[i]));
 					i++;
 				}
@@ -275,7 +278,7 @@ public sealed partial class NetworkService : Instance
 
 				if (originFromPeer == LocalPeerID) return;
 
-				if (Globals.UseLogRPC) PT.Print($"[{LocalPeerID}] Received {md.Name} from {originFromPeer}");
+				if (Globals.UseLogRPC) PT.Print($"[{LocalPeerID}] Received {md.Name} from {originFromPeer} ({msgSize.Bytes().Kilobytes}KB)");
 
 				netObj.RemoteSenderId = originFromPeer;
 				try
