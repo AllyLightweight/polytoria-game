@@ -1149,24 +1149,24 @@ public partial class NetworkedObject : IScriptObject
 		_sequence++;
 		return new NetReplicateData
 		{
-			name = Name,
-			className = ClassName,
-			authority = NetworkAuthority,
-			props = GetNetPropReplicateData(),
-			nodePath = NetworkPath,
-			parentNodePath = NetworkParent?.NetworkPath ?? "",
-			parentNodeID = NetworkParent?.NetworkedObjectID ?? "",
-			networkID = NetworkedObjectID,
-			sequence = _sequence
+			Name = Name,
+			ClassName = ClassName,
+			Authority = NetworkAuthority,
+			Props = GetNetPropReplicateData(),
+			NodePath = NetworkPath,
+			ParentNodePath = NetworkParent?.NetworkPath ?? "",
+			ParentNodeID = NetworkParent?.NetworkedObjectID ?? "",
+			NetworkID = NetworkedObjectID,
+			Sequence = _sequence
 		};
 	}
 
 	internal void RecvReplicate(NetReplicateData data)
 	{
-		string objName = data.name;
-		string className = data.className;
-		int authority = data.authority;
-		NetPropReplicateData[] props = data.props;
+		string objName = data.Name;
+		string className = data.ClassName;
+		int authority = data.Authority;
+		NetPropReplicateData[] props = data.Props;
 		//PT.Print(Root.Network.LocalPeerID, " ", data.nodePath, " on the way");
 
 		NetworkedObject? existingObj = null;
@@ -1187,16 +1187,16 @@ public partial class NetworkedObject : IScriptObject
 		{
 			NetworkedObject netObj = existingObj;
 
-			if (data.sequence < netObj.AppliedSequence) return; // Decline sequence
+			if (data.Sequence < netObj.AppliedSequence) return; // Decline sequence
 
 			netObj.Root = Root;
 			netObj.ExistInNetwork = true;
 			netObj.AutoInvokeReady = false;
-			netObj.NetworkedObjectID = data.networkID;
-			netObj.AppliedSequence = data.sequence;
+			netObj.NetworkedObjectID = data.NetworkID;
+			netObj.AppliedSequence = data.Sequence;
 			netObj.SetNetworkAuthority(authority, false);
 
-			netObj.ApplyNetProps(props, data.isSyncOnce);
+			netObj.ApplyNetProps(props, data.IsSyncOnce);
 			return;
 		}
 
@@ -1211,13 +1211,13 @@ public partial class NetworkedObject : IScriptObject
 		netobj.Root = Root;
 		netobj.NameOverride = objName;
 		netobj.ExistInNetwork = true;
-		netobj.NetworkedObjectID = data.networkID;
+		netobj.NetworkedObjectID = data.NetworkID;
 		netobj.AutoInvokeReady = false;
-		netobj.AppliedSequence = data.sequence;
+		netobj.AppliedSequence = data.Sequence;
 		netobj.SetNetworkAuthority(authority, false);
 		netobj.NetworkParent = this;
 
-		netobj.ApplyNetProps(props, data.isSyncOnce);
+		netobj.ApplyNetProps(props, data.IsSyncOnce);
 	}
 
 	public void SetNetworkAuthority(int peerID, bool recursive = true)
@@ -1311,7 +1311,7 @@ public partial class NetworkedObject : IScriptObject
 		{
 			try
 			{
-				RecvPropUpdate(prop.name, prop.valueRaw, prop.Sequence);
+				RecvPropUpdate(prop.Name, prop.ValueRaw, prop.Sequence);
 			}
 			catch (Exception ex)
 			{
@@ -1347,8 +1347,8 @@ public partial class NetworkedObject : IScriptObject
 			{
 				propData.Add(new NetPropReplicateData
 				{
-					name = prop.Name,
-					valueRaw = NetworkPropSync.SerializePropValue(value),
+					Name = prop.Name,
+					ValueRaw = NetworkPropSync.SerializePropValue(value),
 					Sequence = GetSequenceForProp(prop.Name)
 				});
 			}

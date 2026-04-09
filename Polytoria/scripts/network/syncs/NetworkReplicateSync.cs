@@ -61,7 +61,7 @@ public sealed partial class NetworkReplicateSync : Instance
 		foreach (NetReplicateData data in netObjsData)
 		{
 			// If already exists, continue
-			if (Root.NetworkObjects.ContainsKey(data.networkID)) continue;
+			if (Root.NetworkObjects.ContainsKey(data.NetworkID)) continue;
 			if (isPlaceReplicate)
 			{
 				_worldReplicateSet.Add(data);
@@ -73,25 +73,31 @@ public sealed partial class NetworkReplicateSync : Instance
 		{
 			foreach (NetReplicateData data in chunk)
 			{
-				if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] on the way {data.nodePath}"); }
+				if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] on the way {data.NodePath}"); }
 
-				if (data.parentNodePath == null)
+				if (data.ParentNodeID == null)
 				{
-					if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] {data.nodePath} no parent"); }
+					if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] {data.NodePath} no parent"); }
 					CountInstanceLoaded(null);
 					continue;
 				}
-				string parentPath = data.parentNodePath;
-				NetworkedObject? parentNode = NetService.Root.GetNetObj(parentPath);
+
+				string parentID = data.ParentNodeID;
+				string parentPath = data.ParentNodePath;
+				NetworkedObject? parentNode = NetService.Root.GetNetObjectFromID(parentID);
+
+				// Fallback to path;
+				parentNode ??= NetService.Root.GetNetObj(parentPath);
 
 				if (!NetService.IsPlaceReplicationDone)
 				{
+					// Check for deleted parents
 					bool removed = false;
 					foreach (string removedParentPath in _removedRef.ToArray())
 					{
 						if (removedParentPath != "" && parentPath.StartsWith(removedParentPath))
 						{
-							if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] {data.nodePath} Removed ref {removedParentPath}"); }
+							if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] {data.NodePath} Removed ref {removedParentPath}"); }
 							_removedRef.Remove(removedParentPath);
 							removed = true;
 							break;
@@ -100,7 +106,7 @@ public sealed partial class NetworkReplicateSync : Instance
 
 					if (removed)
 					{
-						if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] {data.nodePath} removed"); }
+						if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] {data.NodePath} removed"); }
 						CountInstanceLoaded(null);
 						continue;
 					}
@@ -108,18 +114,18 @@ public sealed partial class NetworkReplicateSync : Instance
 
 				if (parentNode != null)
 				{
-					if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] Chunk Replicate {data.nodePath}"); }
+					if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] Chunk Replicate {data.NodePath}"); }
 					parentNode?.RecvReplicate(data);
 				}
 				else
 				{
-					if (!_pendingReplicates.TryGetValue(parentPath, out List<NetReplicateData>? value))
+					if (!_pendingReplicates.TryGetValue(parentID, out List<NetReplicateData>? value))
 					{
 						value = [];
-						_pendingReplicates[parentPath] = value;
+						_pendingReplicates[parentID] = value;
 					}
 
-					if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] Pending {data.nodePath}"); }
+					if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] Pending {data.NodePath}"); }
 					value.Add(data);
 				}
 			}
@@ -146,7 +152,7 @@ public sealed partial class NetworkReplicateSync : Instance
 		{
 			foreach (var item in _worldReplicateSet)
 			{
-				PT.Print(item.nodePath, " netID: ", item.networkID);
+				PT.Print(item.NodePath, " netID: ", item.NetworkID);
 			}
 		}
 
@@ -158,7 +164,7 @@ public sealed partial class NetworkReplicateSync : Instance
 
 		foreach (string? key in _pendingReplicates.Keys)
 		{
-			NetworkedObject? node = NetService.Root.GetNetObj(key);
+			NetworkedObject? node = NetService.Root.GetNetObjectFromID(key);
 			if (node != null)
 			{
 				CheckLeftoverReplication(node);
@@ -197,7 +203,7 @@ public sealed partial class NetworkReplicateSync : Instance
 			if (!netObj.ShouldReplicate) continue;
 
 			NetReplicateData data = netObj.GetNetReplicateData();
-			data.isSyncOnce = true;
+			data.IsSyncOnce = true;
 			netObjsData.Add(data);
 			if (_useNetworkLog) { PT.Print($"[Net] Packing {netObj.Name}"); }
 		}
@@ -207,15 +213,15 @@ public sealed partial class NetworkReplicateSync : Instance
 
 	private void CheckLeftoverReplication(NetworkedObject node)
 	{
-		string path = node.NetworkPath;
+		string netID = node.NetworkedObjectID;
 
-		if (_pendingReplicates.TryGetValue(path, out List<NetReplicateData>? list))
+		if (_pendingReplicates.TryGetValue(netID, out List<NetReplicateData>? list))
 		{
 			foreach (NetReplicateData data in list)
 			{
 				node.RecvReplicate(data);
 			}
-			_pendingReplicates.Remove(path);
+			_pendingReplicates.Remove(netID);
 		}
 	}
 
@@ -224,7 +230,7 @@ public sealed partial class NetworkReplicateSync : Instance
 		if (obj != null)
 		{
 			// If object is not from world replicate, return
-			if (!_worldReplicateSet.Remove(new() { networkID = obj.NetworkedObjectID })) return;
+			if (!_worldReplicateSet.Remove(new() { NetworkID = obj.NetworkedObjectID })) return;
 		}
 		InstanceLoadedCount += 1;
 		if (InstanceToBeLoadedCount != 0 && !NetService.IsPlaceReplicationDone)
@@ -257,8 +263,8 @@ public sealed partial class NetworkReplicateSync : Instance
 		}
 
 		NetReplicateData netdata = netObj.GetNetReplicateData();
-		netdata.name = netObj.Name;
-		netdata.isSyncOnce = isSyncOnce;
+		netdata.Name = netObj.Name;
+		netdata.IsSyncOnce = isSyncOnce;
 		byte[] data = SerializeUtils.Serialize(netdata);
 
 		Rpc(nameof(NetRecvReplicate), data);
@@ -285,15 +291,15 @@ public sealed partial class NetworkReplicateSync : Instance
 		await Globals.Singleton.WaitFrame();
 
 		NetReplicateData replicateData = SerializeUtils.Deserialize<NetReplicateData>(data)!;
-		string parentNodePath = replicateData.parentNodePath;
+		string parentNodePath = replicateData.ParentNodePath;
 
-		if (_useNetworkLog) { PT.Print($"[Net] Recv Replicate {replicateData.nodePath}"); }
+		if (_useNetworkLog) { PT.Print($"[Net] Recv Replicate {replicateData.NodePath}"); }
 
 		NetworkedObject? parent = NetService.Root.GetNetObj(parentNodePath);
 
 		if (parent != null)
 		{
-			NetworkedObject? existingChild = NetService.Root.GetNetObjectFromID(replicateData.networkID);
+			NetworkedObject? existingChild = NetService.Root.GetNetObjectFromID(replicateData.NetworkID);
 
 			if (existingChild != null)
 			{
@@ -303,7 +309,7 @@ public sealed partial class NetworkReplicateSync : Instance
 				{
 					if (parent != existingChild)
 					{
-						if (_useNetworkLog) { PT.Print($"[Net] [@] Reparent {replicateData.nodePath}"); }
+						if (_useNetworkLog) { PT.Print($"[Net] [@] Reparent {replicateData.NodePath}"); }
 
 						existingChild.NetworkParent = parent;
 					}
@@ -311,7 +317,7 @@ public sealed partial class NetworkReplicateSync : Instance
 			}
 			else
 			{
-				if (_useNetworkLog) { PT.Print($"[Net] [+] Add {replicateData.nodePath}"); }
+				if (_useNetworkLog) { PT.Print($"[Net] [+] Add {replicateData.NodePath}"); }
 				parent.RecvReplicate(replicateData);
 			}
 		}
@@ -323,7 +329,7 @@ public sealed partial class NetworkReplicateSync : Instance
 				value = [];
 				_pendingReplicates[parentNodePath] = value;
 			}
-			if (_useNetworkLog) { PT.Print($"[Net] [?] Pending {replicateData.nodePath}"); }
+			if (_useNetworkLog) { PT.Print($"[Net] [?] Pending {replicateData.NodePath}"); }
 			value.Add(replicateData);
 		}
 	}
@@ -355,14 +361,14 @@ public sealed partial class NetworkReplicateSync : Instance
 	// Flush pending replicates
 	public void FlushPendingReplicates(NetworkedObject netObj)
 	{
-		string nodePath = netObj.NetworkPath;
-		if (_pendingReplicates.TryGetValue(nodePath, out List<NetReplicateData>? queued))
+		string netID = netObj.NetworkedObjectID;
+		if (_pendingReplicates.TryGetValue(netID, out List<NetReplicateData>? queued))
 		{
-			_pendingReplicates.Remove(nodePath);
-			if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] Resolve Pending {nodePath}"); }
+			_pendingReplicates.Remove(netID);
+			if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] Resolve Pending {netID}"); }
 			foreach (NetReplicateData r in queued)
 			{
-				if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] {nodePath} Resolve Pending Replicate {r.name}"); }
+				if (_useNetworkLog) { PT.Print($"[Net] [{NetService.LocalPeerID}] {netID} Resolve Pending Replicate {r.Name}"); }
 
 				netObj.RecvReplicate(r);
 			}

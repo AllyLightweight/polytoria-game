@@ -865,25 +865,25 @@ public sealed partial class NetworkService : Instance
 	[MemoryPackable]
 	public partial struct NetReplicateData()
 	{
-		[JsonInclude] public string name = null!;
-		[JsonInclude] public string className = null!;
-		[JsonInclude] public string nodePath = null!;
-		[JsonInclude] public string parentNodePath = null!;
-		[JsonInclude] public string parentNodeID = null!;
-		[JsonInclude] public int authority;
-		[JsonInclude] public string networkID = "";
-		[JsonInclude] public NetPropReplicateData[] props = [];
-		[JsonInclude] public bool isSyncOnce = false;
-		[JsonInclude] public int sequence = 0;
+		[JsonInclude] public string Name = null!;
+		[JsonInclude] public string ClassName = null!;
+		[JsonInclude] public string NodePath = null!;
+		[JsonInclude] public string ParentNodePath = null!;
+		[JsonInclude] public string ParentNodeID = null!;
+		[JsonInclude] public int Authority;
+		[JsonInclude] public string NetworkID = "";
+		[JsonInclude] public NetPropReplicateData[] Props = [];
+		[JsonInclude] public bool IsSyncOnce = false;
+		[JsonInclude] public int Sequence = 0;
 
 		public override readonly bool Equals(object? obj)
 		{
-			return obj is NetReplicateData n && n.networkID == networkID;
+			return obj is NetReplicateData n && n.NetworkID == NetworkID;
 		}
 
 		public override readonly int GetHashCode()
 		{
-			return networkID.GetHashCode();
+			return NetworkID.GetHashCode();
 		}
 
 		public static bool operator ==(NetReplicateData left, NetReplicateData right)
@@ -900,8 +900,8 @@ public sealed partial class NetworkService : Instance
 	[MemoryPackable]
 	public partial struct NetPropReplicateData()
 	{
-		[JsonInclude] public string name = null!;
-		[JsonInclude] public byte[] valueRaw = null!;
+		[JsonInclude] public string Name = null!;
+		[JsonInclude] public byte[] ValueRaw = null!;
 		[JsonInclude] public long Sequence = 0;
 	}
 

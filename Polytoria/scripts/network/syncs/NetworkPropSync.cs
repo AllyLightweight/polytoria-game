@@ -403,7 +403,7 @@ public sealed partial class NetworkPropSync : Instance
 		{
 			foreach (NetPropReplicateData r in propReplicates)
 			{
-				netObj.RecvPropUpdate(r.name, r.valueRaw, r.Sequence);
+				netObj.RecvPropUpdate(r.Name, r.ValueRaw, r.Sequence);
 			}
 		}
 		else
@@ -427,7 +427,7 @@ public sealed partial class NetworkPropSync : Instance
 		{
 			foreach (NetPropReplicateData r in queued)
 			{
-				netObj.RecvPropUpdate(r.name, r.valueRaw, r.Sequence);
+				netObj.RecvPropUpdate(r.Name, r.ValueRaw, r.Sequence);
 			}
 
 			_pendingProps.Remove(netID);
@@ -537,8 +537,8 @@ public sealed partial class NetworkPropSync : Instance
 
 				pending.AddRange(obj.Props.Select(p => new NetPropReplicateData
 				{
-					name = p.PropName,
-					valueRaw = p.PropValueRaw,
+					Name = p.PropName,
+					ValueRaw = p.PropValueRaw,
 					Sequence = p.Sequence
 				}));
 				continue;
