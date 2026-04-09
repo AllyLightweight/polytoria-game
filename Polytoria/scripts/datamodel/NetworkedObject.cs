@@ -272,7 +272,7 @@ public partial class NetworkedObject : IScriptObject
 	// NOTE: This part is kinda messy/verbose.
 
 	/// <summary>
-	/// If true, the process is always on despite SetProcess calls
+	/// If true, the process is always on despite SetProcess calls. Set this to true if you wanted to use Process always
 	/// </summary>
 	internal bool ProcessAlwaysOn
 	{
@@ -285,7 +285,7 @@ public partial class NetworkedObject : IScriptObject
 	}
 
 	/// <summary>
-	/// If true, the physics process is always on despite SetPhysicsProcess calls
+	/// If true, the physics process is always on despite SetPhysicsProcess calls.  Set this to true if you wanted to use Physics process always
 	/// </summary>
 	internal bool PhysicsProcessAlwaysOn
 	{
