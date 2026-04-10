@@ -831,6 +831,18 @@ public sealed partial class Camera : Dynamic
 	}
 
 	[ScriptMethod]
+	public bool IsPositionInView(Vector3 pos)
+	{
+		return Camera3D.IsPositionInFrustum(pos.Flip());
+	}
+
+	[ScriptMethod]
+	public bool IsPositionBehind(Vector3 pos)
+	{
+		return Camera3D.IsPositionBehind(pos.Flip());
+	}
+
+	[ScriptMethod]
 	public RayResult? ViewportPointToRay(Vector2 pos, Instance[]? ignoreList = null, float maxDistance = 10000f)
 	{
 		pos = pos.Flip();
