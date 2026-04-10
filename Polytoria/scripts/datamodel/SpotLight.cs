@@ -20,6 +20,13 @@ public sealed partial class SpotLight : Light
 		base.Init();
 	}
 
+	public override void InitOverrides()
+	{
+		Range = 30;
+		Angle = 30;
+		base.InitOverrides();
+	}
+
 	[Editable, ScriptProperty]
 	public float Range
 	{

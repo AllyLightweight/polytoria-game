@@ -27,11 +27,14 @@ public sealed partial class PointLight : Light
 		GDNode.AddChild(_sphere = new() { Visible = false });
 #endif
 
-		Range = 30;
-
 		base.Init();
 	}
 
+	public override void InitOverrides()
+	{
+		Range = 30;
+		base.InitOverrides();
+	}
 
 	[Editable, ScriptProperty, DefaultValue(30f)]
 	public float Range
