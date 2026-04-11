@@ -14,8 +14,11 @@ namespace Polytoria.Datamodel;
 [Instantiable]
 public sealed partial class Particles : Dynamic
 {
+	private const double AabbUpdateIntervalSec = 3;
 	private GpuParticles3D _particles = null!;
 	private ParticleProcessMaterial _particle = null!;
+
+	private double _aabbUpdateTimer = 0;
 
 	private ImageAsset? _asset;
 	private string _imageID = "";
@@ -150,6 +153,7 @@ public sealed partial class Particles : Dynamic
 		{
 			_gravity = value;
 			_particle.Gravity = _gravity.Flip();
+
 			OnPropertyChanged();
 		}
 	}
@@ -350,6 +354,11 @@ public sealed partial class Particles : Dynamic
 
 		_particles.DrawPass1 = _mesh;
 
+		ProcessAlwaysOn = true;
+	}
+
+	public override void InitOverrides()
+	{
 		Shaded = true;
 		Image = null;
 		Amount = 8;
@@ -366,6 +375,26 @@ public sealed partial class Particles : Dynamic
 		EmissionShape = ParticleEmissionShapeEnum.Point;
 		EmissionShapeScale = Vector3.One;
 		BlendMode = BlendModeEnum.Mix;
+		base.InitOverrides();
+	}
+
+	public override void Process(double delta)
+	{
+		_aabbUpdateTimer += delta;
+		if (_aabbUpdateTimer >= AabbUpdateIntervalSec)
+		{
+			_aabbUpdateTimer = 0;
+			UpdateVisibilityAabb();
+		}
+		base.Process(delta);
+	}
+
+	private void UpdateVisibilityAabb()
+	{
+		Aabb captured = _particles.CaptureAabb();
+		if (captured.Size != Vector3.Zero)
+			// Double the size
+			_particles.VisibilityAabb = new Aabb(captured.Position - captured.Size * 0.5f, captured.Size * 2f);
 	}
 
 	[ScriptMethod]
