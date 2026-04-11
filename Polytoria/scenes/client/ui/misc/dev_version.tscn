@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d27rxjbt57nn4" path="res://scripts/client/DevVersionText.cs" id="1_g5ofa"]
 [ext_resource type="FontFile" uid="uid://br7h7u0cyugv0" path="res://assets/fonts/built-in/JetBrainsMono-VariableFont_wght.ttf" id="2_svxac"]
+[ext_resource type="Texture2D" uid="uid://6r437xguwk2a" path="res://assets/textures/client/ui/misc/dev_stripes.png" id="3_g5ofa"]
 
 [sub_resource type="Theme" id="Theme_s2gpv"]
 default_font_size = 14
@@ -22,6 +23,19 @@ grow_horizontal = 2
 mouse_filter = 2
 theme = SubResource("Theme_s2gpv")
 script = ExtResource("1_g5ofa")
+
+[node name="Stripes" type="TextureRect" parent="." unique_id=756443189]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -122.75
+offset_right = 122.75
+offset_bottom = 3.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = ExtResource("3_g5ofa")
+expand_mode = 1
 
 [node name="BuildName" type="Label" parent="." unique_id=1018463418]
 layout_mode = 1
