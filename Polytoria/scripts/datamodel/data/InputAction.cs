@@ -122,7 +122,7 @@ public class InputActionVector2 : InputAction
 
 public class InputActionButton : InputAction
 {
-	[ScriptProperty] public InputButtonCollection Buttons { get; internal set; } = [];
+	[ScriptProperty] public InputButtonCollection Buttons { get; set; } = [];
 
 	[ScriptProperty, JsonIgnore] public bool IsPressed { get; set; }
 	[ScriptProperty, JsonIgnore] public float Weight { get; set; }
