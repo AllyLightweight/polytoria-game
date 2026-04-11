@@ -35,6 +35,7 @@ public sealed partial class Particles : Dynamic
 	private NumberRange _hueVariation;
 	private ParticleSimulationSpaceEnum _simulationSpace;
 	private ParticleEmissionShapeEnum _emissionShape;
+	private ParticleOrientationEnum _orientation;
 	private Vector3 _emissionShapeScale;
 	private BlendModeEnum _blendMode;
 	private bool _shaded = true;
@@ -322,6 +323,25 @@ public sealed partial class Particles : Dynamic
 		}
 	}
 
+	[Editable, ScriptProperty]
+	public ParticleOrientationEnum Orientation
+	{
+		get => _orientation;
+		set
+		{
+			_orientation = value;
+
+			_material.BillboardMode = _orientation switch
+			{
+				ParticleOrientationEnum.FaceCamera => BaseMaterial3D.BillboardModeEnum.Particles,
+				ParticleOrientationEnum.FaceCameraFixedY => BaseMaterial3D.BillboardModeEnum.FixedY,
+				_ => BaseMaterial3D.BillboardModeEnum.Disabled,
+			};
+
+			OnPropertyChanged();
+		}
+	}
+
 	private void CreatePTImageAsset()
 	{
 		if (!uint.TryParse(_imageID, out uint result))
@@ -348,7 +368,6 @@ public sealed partial class Particles : Dynamic
 		_material = new() { VertexColorUseAsAlbedo = true, VertexColorIsSrgb = true, Transparency = BaseMaterial3D.TransparencyEnum.Alpha };
 		_mesh = new QuadMesh() { Material = _material };
 
-		_material.BillboardMode = BaseMaterial3D.BillboardModeEnum.Particles;
 		_material.BillboardKeepScale = true;
 		_material.Transparency = BaseMaterial3D.TransparencyEnum.Alpha;
 
@@ -373,6 +392,7 @@ public sealed partial class Particles : Dynamic
 		EmissionShape = ParticleEmissionShapeEnum.Point;
 		EmissionShapeScale = Vector3.One;
 		BlendMode = BlendModeEnum.Mix;
+		Orientation = ParticleOrientationEnum.FaceCamera;
 		base.InitOverrides();
 	}
 
@@ -442,5 +462,11 @@ public sealed partial class Particles : Dynamic
 		SphereSurface,
 		Box,
 		Ring
+	}
+
+	public enum ParticleOrientationEnum
+	{
+		FaceCamera,
+		FaceCameraFixedY
 	}
 }
