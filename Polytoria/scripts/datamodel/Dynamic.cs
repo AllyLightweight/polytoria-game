@@ -295,7 +295,6 @@ public partial class Dynamic : Instance
 #if CREATOR
 		CreateCreatorBounds();
 #endif
-		SetProcess(false);
 		SetPhysicsProcessWAuthor(false);
 		base.Init();
 	}

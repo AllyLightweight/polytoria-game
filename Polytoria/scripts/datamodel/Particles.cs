@@ -353,8 +353,6 @@ public sealed partial class Particles : Dynamic
 		_material.Transparency = BaseMaterial3D.TransparencyEnum.Alpha;
 
 		_particles.DrawPass1 = _mesh;
-
-		ProcessAlwaysOn = true;
 	}
 
 	public override void InitOverrides()
