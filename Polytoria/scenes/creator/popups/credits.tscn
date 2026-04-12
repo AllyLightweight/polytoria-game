@@ -111,14 +111,14 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Label2" type="Label" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer/VBoxContainer2/VBoxContainer" unique_id=2033886013]
-layout_mode = 2
-text = "Alyx"
-horizontal_alignment = 1
-
 [node name="Label3" type="Label" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer/VBoxContainer2/VBoxContainer" unique_id=1040590629]
 layout_mode = 2
 text = "mawji"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer/VBoxContainer2/VBoxContainer" unique_id=2033886013]
+layout_mode = 2
+text = "Alyx"
 horizontal_alignment = 1
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer" unique_id=491463537]
@@ -166,11 +166,13 @@ text = "Tsuwuki"
 horizontal_alignment = 1
 
 [node name="HSeparator4" type="HSeparator" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer" unique_id=1923886537]
+visible = false
 custom_minimum_size = Vector2(36, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="VBoxContainer5" type="VBoxContainer" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer" unique_id=461871513]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer/VBoxContainer5" unique_id=825259475]
@@ -181,11 +183,6 @@ horizontal_alignment = 1
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer/VBoxContainer5" unique_id=1273951956]
 layout_mode = 2
 theme_override_constants/separation = 0
-
-[node name="Label2" type="Label" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer/VBoxContainer5/VBoxContainer" unique_id=858583658]
-layout_mode = 2
-text = "Vue"
-horizontal_alignment = 1
 
 [node name="Label3" type="Label" parent="MarginContainer/Control2/HBoxContainer/VBoxContainer/VBoxContainer5/VBoxContainer" unique_id=805639270]
 layout_mode = 2
