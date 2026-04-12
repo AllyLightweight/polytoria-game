@@ -254,6 +254,12 @@ public partial class GUI3D : Dynamic
 		return farDist;
 	}
 
+	internal override void OnNodeSizeChanged(Vector3 newSize)
+	{
+		_mesh.Scale = newSize;
+		base.OnNodeSizeChanged(newSize);
+	}
+
 	private void UpdateSize()
 	{
 		if (FaceCamera)

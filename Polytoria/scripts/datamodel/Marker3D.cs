@@ -60,6 +60,12 @@ public partial class Marker3D : Dynamic
 		base.Init();
 	}
 
+	internal override void OnNodeSizeChanged(Vector3 newSize)
+	{
+		_meshInstance.Scale = newSize;
+		base.OnNodeSizeChanged(newSize);
+	}
+
 	private void RenderGizmo()
 	{
 		if (_meshInstance == null)

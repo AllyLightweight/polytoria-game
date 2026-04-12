@@ -377,6 +377,12 @@ public sealed partial class Particles : Dynamic
 		_particles.VisibilityAabb = new Aabb().Grow(1000000);
 	}
 
+	internal override void OnNodeSizeChanged(Vector3 newSize)
+	{
+		_particles.Scale = newSize;
+		base.OnNodeSizeChanged(newSize);
+	}
+
 	public override void InitOverrides()
 	{
 		Shaded = true;

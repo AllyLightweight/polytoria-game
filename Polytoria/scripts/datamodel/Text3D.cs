@@ -341,4 +341,11 @@ public sealed partial class Text3D : Dynamic
 
 		base.Init();
 	}
+
+	internal override void OnNodeSizeChanged(Vector3 newSize)
+	{
+		_label3D.Scale = newSize;
+		_sprite3D.Scale = newSize;
+		base.OnNodeSizeChanged(newSize);
+	}
 }

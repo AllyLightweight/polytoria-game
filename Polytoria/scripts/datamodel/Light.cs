@@ -21,6 +21,12 @@ public partial class Light : Dynamic
 	private float _specular = 0.5f;
 	private bool _shadows = false;
 
+	internal override void OnNodeSizeChanged(Vector3 newSize)
+	{
+		LightNode.Scale = newSize;
+		base.OnNodeSizeChanged(newSize);
+	}
+
 	[Editable, ScriptProperty]
 	public Color Color
 	{

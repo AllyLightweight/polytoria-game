@@ -165,6 +165,12 @@ public sealed partial class Image3D : Dynamic
 		base.Init();
 	}
 
+	internal override void OnNodeSizeChanged(Vector3 newSize)
+	{
+		_mesh.Scale = newSize;
+		base.OnNodeSizeChanged(newSize);
+	}
+
 	private void CreatePTImageAsset()
 	{
 		if (!uint.TryParse(_imageID, out uint result))

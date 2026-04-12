@@ -81,6 +81,12 @@ public sealed partial class Decal : Dynamic
 		base.Init();
 	}
 
+	internal override void OnNodeSizeChanged(Vector3 newSize)
+	{
+		_decal.Scale = newSize;
+		base.OnNodeSizeChanged(newSize);
+	}
+
 	private void OnResourceLoaded(Resource? tex)
 	{
 		_decal.TextureAlbedo = (Texture2D?)tex ?? null;

@@ -334,6 +334,12 @@ public sealed partial class PolytorianModel : CharacterModel
 		Animator.ImportOneShotAnimationRaw("drink", "ToolDrink", true);
 	}
 
+	internal override void OnNodeSizeChanged(Vector3 newSize)
+	{
+		Pivot?.Scale = newSize;
+		base.OnNodeSizeChanged(newSize);
+	}
+
 	public override void Process(double delta)
 	{
 		base.Process(delta);
