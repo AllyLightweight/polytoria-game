@@ -496,7 +496,7 @@ public sealed partial class CreatorService : Node, IScriptObject
 	{
 		string exePath = OS.GetExecutablePath();
 
-		List<string> args = ["--log-file", "user://logs/server.log", "--headless", "-solo", placeFilePath, "-entry", entryPath, "-debug", $"127.0.0.1:{DebugServer.Port}", "-debug-id", debugID, "-port", port.ToString()];
+		List<string> args = ["--log-file", "user://logs/server.log", "-solo", placeFilePath, "-entry", entryPath, "-debug", $"127.0.0.1:{DebugServer.Port}", "-debug-id", debugID, "-port", port.ToString()];
 
 		if (spawnPos != null)
 		{
@@ -510,6 +510,11 @@ public sealed partial class CreatorService : Node, IScriptObject
 		else
 		{
 			args.AddRange(["-nplr", LocalTestPlayerCount.ToString()]);
+		}
+
+		if (!OS.HasFeature("serverpov"))
+		{
+			args.InsertRange(0, ["--headless"]);
 		}
 
 		if (Globals.IsInGDEditor)
