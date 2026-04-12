@@ -824,13 +824,13 @@ public partial class Dynamic : Instance
 
 	internal Vector3 GetLocalPosition()
 	{
-		return GetLocalTransform().Origin;
+		return GetLocalTransform().Origin / GetParentScale();
 	}
 
 	internal void SetLocalPosition(Vector3 to)
 	{
 		var t = GetLocalTransform();
-		SetLocalTransform(new Transform3D(t.Basis, to));
+		SetLocalTransform(new Transform3D(t.Basis, to * GetParentScale()));
 	}
 
 	internal Transform3D GetGlobalTransform()
