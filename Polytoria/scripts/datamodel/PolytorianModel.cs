@@ -288,6 +288,8 @@ public sealed partial class PolytorianModel : CharacterModel
 		RightLegMeshInstance = GDNode.GetNode<MeshInstance3D>("Character/Poly/Skeleton3D/RightLeg");
 		Pivot = GDNode.GetNode<Node3D>("Character/Poly");
 
+		Pivot.Scale = NodeSize;
+
 		HeadMeshInstance.MaterialOverride = _headMat;
 		TorsoMeshInstance.MaterialOverride = _torsoMat;
 		LeftArmMeshInstance.MaterialOverride = _leftArmMat;

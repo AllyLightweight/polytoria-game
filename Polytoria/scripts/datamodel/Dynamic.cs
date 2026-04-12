@@ -167,6 +167,12 @@ public partial class Dynamic : Instance
 			var oldN = NodeSize;
 			ApplyLocalSize(value);
 			PropagateParentSizeChanged(oldN);
+
+			if (AutoUpdateNetTransform)
+			{
+				UpdateNetTransformReliable();
+			}
+
 			OnPropertyChanged();
 		}
 	}
@@ -764,14 +770,17 @@ public partial class Dynamic : Instance
 		{
 			if (item is Dynamic dyn)
 			{
+				var oldDynSize = dyn.NodeSize;
 				Vector3 cachedLocalSize = dyn.NodeSize / oldParentSize;
+
 				dyn.ApplyLocalSize(cachedLocalSize);
 
 				// Apply position
 				Vector3 sizeRatio = NodeSize / oldParentSize;
 				dyn.GDNode3D.Position *= sizeRatio;
+
 				dyn.NotifySizeChange();
-				dyn.PropagateParentSizeChanged(dyn.NodeSize);
+				dyn.PropagateParentSizeChanged(oldDynSize);
 			}
 		}
 	}
@@ -786,11 +795,6 @@ public partial class Dynamic : Instance
 
 		Vector3 parentScale = GetParentScale();
 		NodeSize = scale * parentScale;
-
-		if (AutoUpdateNetTransform)
-		{
-			UpdateNetTransformReliable();
-		}
 	}
 
 	internal void NotifySizeChange()
@@ -849,7 +853,8 @@ public partial class Dynamic : Instance
 	{
 		var t = GDNode3D.Transform;
 		Transform3D t2 = new(t.Basis, t.Origin);
-		return t2 * Transform3D.Identity.Scaled(NodeSize);
+		var t3 = t2 * Transform3D.Identity.Scaled(NodeSize);
+		return t3;
 	}
 
 	internal void SetGlobalTransformRaw(Transform3D to)
