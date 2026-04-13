@@ -303,6 +303,10 @@ public partial class Physical : Dynamic
 		TouchEnded.Unsubscribed += OnTouchUnsubscribed;
 
 		base.Init();
+
+		// Apply freeze first so velocity doesn't get lost
+		ApplyFreeze(true);
+
 		if (this is Entity e)
 		{
 			e.RigidBody.GravityScale = 2;
