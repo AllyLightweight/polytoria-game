@@ -490,7 +490,7 @@ return module";
 		RescanFolder();
 	}
 
-	public void DeleteFile(string src)
+	public void RemoveFile(string src, bool toRecycleBin = false)
 	{
 		if (src == Globals.ProjectMetaFileName) throw new InvalidOperationException("Cannot delete the project metadata file");
 		if (src == Globals.ProjectInputMapName) throw new InvalidOperationException("Cannot delete the input map");
@@ -499,7 +499,22 @@ return module";
 
 		string absoluteSrc = GlobalizePath(src);
 
-		if (File.GetAttributes(absoluteSrc) == FileAttributes.Directory)
+		if (toRecycleBin)
+		{
+			Error err = OS.MoveToTrash(absoluteSrc);
+			if (err != Error.Ok)
+				PT.PrintWarn($"Failed to move to recycle bin: {absoluteSrc}");
+
+			// Move the .meta file to trash if it exists
+			string metaPath = PackedFormat.GetMetaPath(absoluteSrc);
+			if (File.Exists(metaPath))
+			{
+				err = OS.MoveToTrash(metaPath);
+				if (err != Error.Ok)
+					PT.PrintWarn($"Failed to move .meta to recycle bin: {metaPath}");
+			}
+		}
+		else if (File.GetAttributes(absoluteSrc) == FileAttributes.Directory)
 		{
 			Directory.Delete(absoluteSrc, true);
 		}
@@ -514,7 +529,6 @@ return module";
 		}
 
 		QueueRescanFolder();
-
 	}
 
 	public void RenameFile(string src, string renameTo)

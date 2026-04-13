@@ -464,12 +464,12 @@ public partial class CreatorInterface : Control, IScriptObject
 			}
 		}
 
-		if (!await PromptConfirmation("Are you sure you want to delete " + wordToUse + "? This action is irreversible")) return;
+		if (!await PromptConfirmation("Are you sure you want to delete " + wordToUse + "? You can recover this from the recycle bin")) return;
 		try
 		{
 			foreach (string item in files)
 			{
-				session.DeleteFile(item);
+				session.RemoveFile(item, toRecycleBin: true);
 			}
 		}
 		catch (Exception ex)
