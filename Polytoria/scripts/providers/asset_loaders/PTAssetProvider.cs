@@ -46,6 +46,9 @@ public class PTAssetProvider : IAssetProvider
 
 					Node3D scene = (Node3D)document.GenerateScene(state);
 
+					// Remove arbitrary nodes that may come with the GLTF (eg. Rigidbodies)
+					RemoveNonMeshNodes(scene);
+
 					TaskCompletionSource<PackedScene> callback = new();
 
 					Callable.From(() =>
@@ -119,6 +122,22 @@ public class PTAssetProvider : IAssetProvider
 	public void Dispose()
 	{
 		GC.SuppressFinalize(this);
+	}
+
+	private static void RemoveNonMeshNodes(Node node)
+	{
+		foreach (Node child in node.GetChildren())
+		{
+			RemoveNonMeshNodes(child); // recurse first
+
+			bool isMesh = child is MeshInstance3D;
+			bool isExactNode3D = child.GetType() == typeof(Node3D);
+
+			if (!isMesh && !isExactNode3D)
+			{
+				child.Free();
+			}
+		}
 	}
 }
 
