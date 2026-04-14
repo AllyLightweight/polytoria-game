@@ -25,6 +25,7 @@ public sealed partial class PlayerDefaults : HiddenBase
 	private bool _useHeadTurning;
 	private bool _useBubbleChat;
 	private bool _autoLoadAppearance;
+	private bool _loadAppearanceTools;
 
 	[Editable, ScriptProperty]
 	public float MaxHealth
@@ -204,6 +205,17 @@ public sealed partial class PlayerDefaults : HiddenBase
 		}
 	}
 
+	[Editable, ScriptProperty]
+	public bool LoadAppearanceTools
+	{
+		get => _loadAppearanceTools;
+		set
+		{
+			_loadAppearanceTools = value;
+			OnPropertyChanged();
+		}
+	}
+
 	public Inventory? Inventory => FindChild<Inventory>("Inventory")!;
 
 	public override void Init()
@@ -230,5 +242,6 @@ public sealed partial class PlayerDefaults : HiddenBase
 		UseHeadTurning = true;
 		UseBubbleChat = true;
 		AutoLoadAppearance = true;
+		LoadAppearanceTools = true;
 	}
 }

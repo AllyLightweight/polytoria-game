@@ -995,7 +995,7 @@ public partial class NPC : Physical
 	{
 		if (Character is PolytorianModel ptm)
 		{
-			ptm.LoadAppearance(userID);
+			ptm.LoadAppearance(userID, Root.PlayerDefaults.LoadAppearanceTools);
 		}
 	}
 
