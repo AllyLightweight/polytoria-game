@@ -54,11 +54,7 @@ public partial class NerdStatPanel : Control
 			return Performance.Singleton.GetMonitor(Performance.Monitor.ObjectResourceCount).ToString();
 		});
 		CreateDivider();
-		CreateLabel("Active Physics object", () =>
-		{
-			return Performance.Singleton.GetMonitor(Performance.Monitor.Physics3DActiveObjects).ToString();
-		});
-		CreateLabel("DMB Parts", _root.Bridge.SeparatedPartCount.ToString);
+		CreateLabel("Non-DMB Parts", _root.Bridge.SeparatedPartCount.ToString);
 		CreateDivider();
 		CreateLabel("Data Send", () =>
 		{
