@@ -374,7 +374,7 @@ public partial class Dynamic : Instance
 			// If using SetLocalTransformRaw directly, the part size would appear bigger than usual.
 			if (this is Part)
 			{
-				Transform3D setto = new(_currentTransform.Basis.Orthonormalized(), _currentTransform.Origin);
+				Transform3D setto = new(new Basis(newRotation), _currentTransform.Origin);
 
 				// Only update when changed
 				if (!_oldPartTransformApplied.IsEqualApprox(setto))
