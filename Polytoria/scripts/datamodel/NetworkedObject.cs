@@ -326,7 +326,9 @@ public partial class NetworkedObject : IScriptObject
 
 	internal bool ShouldReplicate = true;
 	internal bool ShouldReplicateChild => this is not ServerHidden;
-	protected bool HasAuthority => Root != null && (Root.Network.LocalPeerID == NetworkAuthority || Root.Network.IsServer);
+
+	// If local peer id matches, is server (owns everything), or doesn't exist in server (client owns it's local thing)
+	protected bool HasAuthority => Root != null && (Root.Network.LocalPeerID == NetworkAuthority || Root.Network.IsServer || !ExistInNetwork);
 
 	/// <summary>
 	/// Check if this object is ready in the network
