@@ -480,8 +480,9 @@ public partial class Dynamic : Instance
 		ForceUpdateTransform();
 		Transform3D current = GetLocalTransform();
 
-		// Only send if changed
-		if (_lastSentTransform != null && _lastSentTransform.Value.IsEqualApprox(current))
+		// Only send if changed (except NPC & player, their position always sync to prevent them from floating)
+		// TODO: This is kinda... hacky? We must find a way to prevent them from floating.
+		if (_lastSentTransform != null && _lastSentTransform.Value.IsEqualApprox(current) && this is not NPC)
 			return;
 
 		_lastSentTransform = current;
