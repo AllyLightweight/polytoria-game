@@ -131,9 +131,10 @@ public class PTAssetProvider : IAssetProvider
 			RemoveNonMeshNodes(child); // recurse first
 
 			bool isMesh = child is MeshInstance3D;
+			bool isSkeleton = child is Skeleton3D;
 			bool isExactNode3D = child.GetType() == typeof(Node3D);
 
-			if (!isMesh && !isExactNode3D)
+			if (!isMesh && !isSkeleton && !isExactNode3D)
 			{
 				child.Free();
 			}
