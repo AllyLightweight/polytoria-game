@@ -356,7 +356,6 @@ public partial class UIInventory : Control
 
 		if (_tools.TryGetValue(tool, out UIToolItem? toolItem))
 		{
-			GD.Print(tool.NetworkPath, " REMOVE");
 			_tools.Remove(tool);
 			int slot = _toolSlot.FindIndex(item => item == tool);
 			if (slot != -1)
