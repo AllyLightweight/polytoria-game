@@ -354,7 +354,7 @@ public partial class CreatorInterface : Control, IScriptObject
 						if (i is Part p)
 						{
 							p.OverrideNoMultiMesh = true;
-							p.CreateSeperateMesh();
+							p.CreateSeparateMesh();
 						}
 					}
 					GltfDocument document = new();

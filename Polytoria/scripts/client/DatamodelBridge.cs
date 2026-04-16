@@ -103,28 +103,40 @@ public partial class DatamodelBridge : Node3D
 
 		foreach (Part part in _dirty)
 		{
-			if (!_handles.TryGetValue(part, out PartHandle? handle)) continue;
+			bool inBatch = _handles.TryGetValue(part, out PartHandle? handle);
+			bool shouldBatch = IsPartEligible(part);
 
-			if (!IsPartEligible(part))
+			if (shouldBatch)
 			{
-				RemovePart(part);
-				part.CreateSeperateMesh();
-				continue;
+				ChunkKey newKey = GetKeyForPart(part);
+
+				if (!inBatch)
+				{
+					AddToBatch(part, newKey);
+				}
+				else if (!newKey.Equals(handle!.Key))
+				{
+					RemoveFromBatch(part);
+					AddToBatch(part, newKey);
+				}
+				else
+				{
+					ChunkBatch batch = _batches[handle.Key];
+					batch.MultiMesh.SetInstanceTransform(handle.Index, part.GetGlobalTransform());
+					batch.MultiMesh.SetInstanceColor(handle.Index, part.Color);
+				}
 			}
-
-			var newKey = GetKeyForPart(part);
-
-			if (!newKey.Equals(handle.Key))
+			else
 			{
-				RemoveFromBatch(part);
-				AddToBatch(part, newKey);
-				continue;
-			}
+				if (inBatch)
+				{
+					RemoveFromBatch(part);
+				}
 
-			if (_batches.TryGetValue(handle.Key, out var batch))
-			{
-				batch.MultiMesh.SetInstanceTransform(handle.Index, part.GetGlobalTransform());
-				batch.MultiMesh.SetInstanceColor(handle.Index, part.Color);
+				if (!part.IsMeshSeparated)
+				{
+					part.CreateSeparateMesh();
+				}
 			}
 		}
 
@@ -216,6 +228,8 @@ public partial class DatamodelBridge : Node3D
 			_batches.Add(key, batch);
 		}
 
+		part.RemoveSeparateMesh();
+
 		int index = batch.Count;
 		ResizeBatch(batch, index + 1);
 
@@ -291,15 +305,13 @@ public partial class DatamodelBridge : Node3D
 		if (_handles.ContainsKey(part)) return;
 		if (!IsPartEligible(part))
 		{
-			part.CreateSeperateMesh();
+			part.CreateSeparateMesh();
 			return;
 		}
 
 		System.Action propertyChangedHandler = () => { if (isGameReady) _dirty.Add(part); };
-		System.Action transformChangedHandler = () => { if (isGameReady) RemovePart(part); };
 
 		part.PropertyChanged.Connect(propertyChangedHandler);
-		part.TransformChanged += transformChangedHandler;
 
 		var key = GetKeyForPart(part);
 		AddToBatch(part, key);
@@ -307,7 +319,6 @@ public partial class DatamodelBridge : Node3D
 		if (_handles.TryGetValue(part, out var handle))
 		{
 			handle.PropertyChangedHandler = propertyChangedHandler;
-			handle.TransformChangedHandler = transformChangedHandler;
 		}
 
 		_dirty.Add(part);
@@ -318,10 +329,9 @@ public partial class DatamodelBridge : Node3D
 		if (_handles.TryGetValue(part, out var handle))
 		{
 			part.PropertyChanged.Disconnect(handle.PropertyChangedHandler);
-			part.TransformChanged -= handle.TransformChangedHandler;
 		}
 
-		part.CreateSeperateMesh();
+		part.CreateSeparateMesh();
 		RemoveFromBatch(part);
 	}
 
@@ -342,7 +352,6 @@ public partial class DatamodelBridge : Node3D
 		public ChunkKey Key;
 		public int Index;
 		public System.Action PropertyChangedHandler = null!;
-		public System.Action TransformChangedHandler = null!;
 	}
 
 	private struct ChunkKey

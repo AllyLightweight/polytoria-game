@@ -17,13 +17,12 @@ public partial class Part : Entity
 	private ShapeEnum _shape;
 	private PartMaterialEnum _material;
 	private Color _color = new(1, 1, 1);
-	private bool _isSeperateMesh = false;
+	private bool _isSeparateMesh = false;
 	private bool _castShadows;
-	private Timer? _seperatedTimer;
 
 	private Node3D _nRemoteAt = null!; // Remote collider proxy
 
-	public bool IsMeshSeperated => _isSeperateMesh;
+	public bool IsMeshSeparated => _isSeparateMesh;
 	public int BridgeID = -1;
 
 	public override void EnterTree()
@@ -34,7 +33,7 @@ public partial class Part : Entity
 			if (current is UIViewport)
 			{
 				OverrideNoMultiMesh = true;
-				CreateSeperateMesh();
+				CreateSeparateMesh();
 			}
 			current = current.Parent;
 		}
@@ -78,46 +77,22 @@ public partial class Part : Entity
 		UpdateCollision();
 		UpdateMeshSize();
 
-#if CREATOR
-		if (Root.Network.NetworkMode == Services.NetworkService.NetworkModeEnum.Creator)
-		{
-			OverrideNoMultiMesh = true;
-			CreateSeperateMesh();
-		}
-#endif
 		base.Ready();
 	}
 
-	public void CreateSeperateMesh()
+	public void CreateSeparateMesh()
 	{
-		if (_isSeperateMesh)
+		if (_isSeparateMesh)
 		{
 			return;
 		}
-		_isSeperateMesh = true;
+		_isSeparateMesh = true;
 		if (Root != null && Root.Bridge != null)
 		{
 			Root.Bridge.SeparatedPartCount++;
 		}
 		GDNode3D.AddChild(_mesh = new(), false);
 		_meshMaterial = new StandardMaterial3D();
-
-		// Disabling this cuz it creates a mess as of now
-		/*
-		if (Root.Bridge != null)
-		{
-			if (_seperatedTimer != null)
-			{
-				_seperatedTimer.QueueFree();
-				_seperatedTimer = null;
-			}
-
-			_seperatedTimer = new();
-			GDNode3D.AddChild(_seperatedTimer, false);
-			_seperatedTimer.Timeout += OnDMBTimeout;
-			_seperatedTimer.Start(DMBTimeout);
-		}
-		*/
 
 		UpdateMeshSize();
 
@@ -141,22 +116,13 @@ public partial class Part : Entity
 		RefreshUV1();
 	}
 
-	private void OnDMBTimeout()
+	public void RemoveSeparateMesh()
 	{
-		_seperatedTimer?.QueueFree();
-		_seperatedTimer = null;
-
-		Root.Bridge.AddPart(this);
-		RemoveSeperateMesh();
-	}
-
-	public void RemoveSeperateMesh()
-	{
-		if (!_isSeperateMesh)
+		if (!_isSeparateMesh)
 		{
 			return;
 		}
-		_isSeperateMesh = false;
+		_isSeparateMesh = false;
 		Root.Bridge.SeparatedPartCount--;
 		_mesh?.Free();
 	}
@@ -220,7 +186,7 @@ public partial class Part : Entity
 
 	internal void RefreshUV1()
 	{
-		if (_isSeperateMesh && _meshMaterial is StandardMaterial3D sm)
+		if (_isSeparateMesh && _meshMaterial is StandardMaterial3D sm)
 		{
 			sm.Uv1Scale = Size / 4;
 		}
@@ -230,7 +196,7 @@ public partial class Part : Entity
 	{
 		if (_collider == null) return;
 		(Godot.Mesh mesh, Shape3D shape) = Globals.LoadShape(_shape.ToString());
-		if (_isSeperateMesh)
+		if (_isSeparateMesh)
 		{
 			_mesh?.Mesh = mesh;
 			_collider.Shape = shape;
@@ -244,7 +210,7 @@ public partial class Part : Entity
 
 	internal void UpdateMaterial()
 	{
-		if (_isSeperateMesh)
+		if (_isSeparateMesh)
 		{
 			Material temp = Globals.LoadMaterial(_material.ToString());
 			if (temp is StandardMaterial3D mat)
@@ -264,7 +230,7 @@ public partial class Part : Entity
 
 	internal void UpdateColor()
 	{
-		if (_isSeperateMesh)
+		if (_isSeparateMesh)
 		{
 			if (_meshMaterial is StandardMaterial3D sm)
 			{
@@ -279,7 +245,7 @@ public partial class Part : Entity
 
 	internal void UpdateShadow()
 	{
-		if (_isSeperateMesh)
+		if (_isSeparateMesh)
 		{
 			_mesh?.CastShadow = _castShadows ? GeometryInstance3D.ShadowCastingSetting.On : GeometryInstance3D.ShadowCastingSetting.Off;
 		}
