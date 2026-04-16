@@ -168,33 +168,23 @@ public sealed partial class ClientSettings : Node
 
 public sealed class ClientSettingsData
 {
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public bool UseCtrlLock { get; set; } = true;
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public double SoundVolume { get; set; } = 100;
 
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public double CameraSensitivity { get; set; } = 0.6;
 
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public bool PhotoMode { get; set; } = false;
 
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public bool PostProcessing { get; set; } = true;
 
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public float UIScale { get; set; } = 1;
 
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public bool UseFullscreen { get; set; } = false;
 
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public bool UseVSync { get; set; } = true;
 
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public bool ShowConnectionIndicators { get; set; } = true;
 
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public PerformanceOverlayModeEnum PerformanceOverlayMode { get; set; } = PerformanceOverlayModeEnum.None;
 
 	[JsonIgnore]
