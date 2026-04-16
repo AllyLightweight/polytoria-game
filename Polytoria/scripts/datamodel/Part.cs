@@ -125,6 +125,7 @@ public partial class Part : Entity
 		_isSeparateMesh = false;
 		Root.Bridge.SeparatedPartCount--;
 		_mesh?.Free();
+		_mesh = null;
 	}
 
 	[Editable, ScriptProperty, DefaultValue(ShapeEnum.Brick)]
