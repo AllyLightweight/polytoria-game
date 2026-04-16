@@ -235,7 +235,7 @@ public partial class NetworkedObject : IScriptObject
 	private string _networkedObjectID = "";
 	private string _objectID = "";
 
-	[Export, ScriptProperty, CloneIgnore, SaveIgnore]
+	[ScriptProperty, CloneIgnore, SaveIgnore]
 	public string NetworkedObjectID
 	{
 		get => _networkedObjectID;
@@ -246,7 +246,7 @@ public partial class NetworkedObject : IScriptObject
 		}
 	}
 
-	[Export, ScriptProperty, CloneIgnore, SaveIgnore]
+	[ScriptProperty, CloneIgnore, SaveIgnore]
 	public string ObjectID
 	{
 		get => _objectID;
