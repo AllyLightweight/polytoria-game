@@ -846,7 +846,6 @@ public sealed partial class Camera : Dynamic
 	[ScriptMethod]
 	public RayResult? ViewportPointToRay(Vector2 pos, Instance[]? ignoreList = null, float maxDistance = 10000f)
 	{
-		pos = pos.Flip();
 		Viewport viewport = GDNode.GetViewport();
 		Vector2 size = viewport.GetVisibleRect().Size;
 		Vector2 screenPos = new(pos.X * size.X, pos.Y * size.Y);
@@ -867,7 +866,6 @@ public sealed partial class Camera : Dynamic
 	[ScriptMethod]
 	public Vector2 ViewportToScreenPoint(Vector2 pos)
 	{
-		pos = pos.Flip();
 		Viewport viewport = GDNode.GetViewport();
 		Vector2 size = viewport.GetVisibleRect().Size;
 		return new Vector2(pos.X * size.X, pos.Y * size.Y).Flip();
@@ -876,7 +874,6 @@ public sealed partial class Camera : Dynamic
 	[ScriptMethod]
 	public Vector3 ViewportToWorldPoint(Vector2 pos)
 	{
-		pos = pos.Flip();
 		Viewport viewport = GDNode.GetViewport();
 		Vector2 size = viewport.GetVisibleRect().Size;
 		Vector2 screenPos = new(pos.X * size.X, pos.Y * size.Y);
@@ -892,7 +889,7 @@ public sealed partial class Camera : Dynamic
 		Viewport viewport = GDNode.GetViewport();
 		Vector2 screenPos = Camera3D.UnprojectPosition(pos);
 		Vector2 size = viewport.GetVisibleRect().Size;
-		return new Vector2(screenPos.X / size.X, screenPos.Y / size.Y).Flip();
+		return new Vector2(screenPos.X / size.X, screenPos.Y / size.Y);
 	}
 
 	[ScriptMethod]
@@ -912,7 +909,7 @@ public sealed partial class Camera : Dynamic
 			return Vector2.Zero;
 
 		Vector2 size = viewport.GetVisibleRect().Size;
-		return new Vector2(pos.X / size.X, pos.Y / size.Y).Flip();
+		return new Vector2(pos.X / size.X, pos.Y / size.Y);
 	}
 
 	[ScriptMethod]
