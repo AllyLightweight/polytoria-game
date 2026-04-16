@@ -22,6 +22,7 @@ using System.Threading;
 using System.Linq;
 using Polytoria.Networking;
 using Polytoria.Shared.AssetLoaders;
+using System.Collections.Concurrent;
 
 namespace Polytoria.Datamodel;
 
@@ -162,8 +163,8 @@ public sealed partial class World : Instance
 		}
 	}
 
-	public readonly Dictionary<string, NetworkedObject> NetworkObjects = [];
-	public readonly Dictionary<string, NetworkedObject> Objects = [];
+	public readonly ConcurrentDictionary<string, NetworkedObject> NetworkObjects = [];
+	public readonly ConcurrentDictionary<string, NetworkedObject> Objects = [];
 
 	[ScriptProperty, ScriptLegacyProperty("GameID")]
 	public int WorldID
@@ -455,7 +456,7 @@ public sealed partial class World : Instance
 
 	internal void UnregisterNetworkedObject(NetworkedObject netObj)
 	{
-		NetworkObjects.Remove(netObj.NetworkedObjectID);
+		NetworkObjects.TryRemove(netObj.NetworkedObjectID, out _);
 	}
 
 	internal void RegisterObject(NetworkedObject netObj)
@@ -465,7 +466,7 @@ public sealed partial class World : Instance
 
 	internal void UnregisterObject(NetworkedObject netObj)
 	{
-		Objects.Remove(netObj.ObjectID);
+		Objects.TryRemove(netObj.ObjectID, out _);
 	}
 
 	internal void ReportNetworkedObjectReady(NetworkedObject netObj)
