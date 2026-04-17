@@ -317,6 +317,8 @@ public partial class Physical : Dynamic
 
 		ApplyFreeze(true);
 
+		_proxyToPhysical[GDNode] = this;
+
 		if (this is Entity e)
 		{
 			e.RigidBody.GravityScale = 2;
@@ -340,6 +342,8 @@ public partial class Physical : Dynamic
 		ClearCollisionBody();
 		Root?.Loaded.Disconnect(OnRootReady);
 		// _proxyToPhysical.Remove(PhysicalArea);
+		_proxyToPhysical.Remove(GDNode);
+
 		if (PhysicalArea != null)
 		{
 			_proxyToPhysical.Remove(PhysicalArea);
