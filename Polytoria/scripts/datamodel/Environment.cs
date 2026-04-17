@@ -277,7 +277,7 @@ public sealed partial class Environment : Instance
 				Direction = direction.Normalized(),
 				Position = hitPos.Flip(),
 				Normal = normal.Flip(),
-				Distance = origin.DistanceTo(hitPos),
+				Distance = (origin.Flip() - hitPos).Length(),
 				Instance = ColliderToInstance(collider)
 			};
 		}
@@ -323,7 +323,7 @@ public sealed partial class Environment : Instance
 				Direction = direction.Normalized(),
 				Position = hitPos.Flip(),
 				Normal = normal.Flip(),
-				Distance = origin.Flip().DistanceTo(hitPos),
+				Distance = (origin.Flip() - hitPos).Length(),
 				Instance = ColliderToInstance(collider)
 			});
 		}
