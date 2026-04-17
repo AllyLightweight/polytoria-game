@@ -64,7 +64,7 @@ public sealed partial class CreatorSettings : Node
 						new("PhotoMode", "Photo Mode", false),
 						new("PostProcessing", "Post Processing", false),
 						new("VSync", "V-Sync", true),
-						new("RenderingMethod", "Rendering Method (requires restart)", RenderingMethodEnum.High),
+						new("RenderingMethod", "Rendering Method (requires restart)", RenderingMethodEnum.Standard),
 					]
 				},
 				new() {
@@ -106,9 +106,9 @@ public sealed partial class CreatorSettings : Node
 		RenderingDeviceSwitcher.Switch(
 			GetSetting<RenderingMethodEnum>("Graphics.RenderingMethod") switch
 			{
-				RenderingMethodEnum.High => RenderingDeviceSwitcher.RenderingDeviceEnum.Forward,
-				RenderingMethodEnum.Medium => RenderingDeviceSwitcher.RenderingDeviceEnum.Mobile,
-				RenderingMethodEnum.LowGL => RenderingDeviceSwitcher.RenderingDeviceEnum.GLCompatibility,
+				RenderingMethodEnum.Standard => RenderingDeviceSwitcher.RenderingDeviceEnum.Forward,
+				RenderingMethodEnum.Performance => RenderingDeviceSwitcher.RenderingDeviceEnum.Mobile,
+				RenderingMethodEnum.Compatibility => RenderingDeviceSwitcher.RenderingDeviceEnum.GLCompatibility,
 				_ => RenderingDeviceSwitcher.RenderingDeviceEnum.Mobile,
 			}
 			);
@@ -298,9 +298,9 @@ public enum PreferredEditorEnum
 
 public enum RenderingMethodEnum
 {
-	High,
-	Medium,
-	LowGL
+	Standard,
+	Performance,
+	Compatibility
 }
 
 [JsonSourceGenerationOptions(WriteIndented = true)]

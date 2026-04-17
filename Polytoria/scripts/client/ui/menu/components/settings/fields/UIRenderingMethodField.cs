@@ -27,9 +27,9 @@ public partial class UIRenderingMethodField : MenuButton, ISettingField
 	public override void _Ready()
 	{
 		_popup = GetPopup();
-		_popup.AddItem("High", 0);
-		_popup.AddItem("Medium", 1);
-		_popup.AddItem("Low (OpenGL)", 2);
+		_popup.AddItem("Standard", 0);
+		_popup.AddItem("Performance", 1);
+		_popup.AddItem("Compatibility", 2);
 
 		Refresh();
 
