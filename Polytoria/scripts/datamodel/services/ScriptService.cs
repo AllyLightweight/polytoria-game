@@ -229,10 +229,7 @@ public sealed partial class ScriptService : Instance
 		string name,
 		bool compat = false)
 	{
-		// Normalize name for consistent case-insensitive caching
-		string normalizedName = name.ToLowerInvariant();
-
-		CacheKey cacheKey = new() { Type = type, Key = normalizedName, IsCompatibility = compat };
+		CacheKey cacheKey = new() { Type = type, Key = name, IsCompatibility = compat };
 
 		// Try to get from cache first
 		if (_propertyCache.TryGetValue(cacheKey, out PropertyInfo? cached))
@@ -251,20 +248,15 @@ public sealed partial class ScriptService : Instance
 		else
 		{
 			// try legacy properties first
+			// and then case-insensitive ScriptPropertyAttribute
 			result = props.FirstOrDefault(p =>
 			{
 				ScriptLegacyPropertyAttribute? legacyAttr = p.GetCustomAttribute<ScriptLegacyPropertyAttribute>();
 				return legacyAttr != null &&
 					   legacyAttr.PropertyName.Equals(name, StringComparison.OrdinalIgnoreCase);
-			});
-
-			// case-insensitive ScriptPropertyAttribute
-			if (result == null)
-			{
-				result = props.FirstOrDefault(p =>
+			}) ?? props.FirstOrDefault(p =>
 					p.IsDefined(typeof(ScriptPropertyAttribute), false) &&
 					p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-			}
 		}
 
 		// Cache result
