@@ -96,7 +96,13 @@ public static class XmlFormat
 		private static string? ParseString(ReadOnlySpan<char> value)
 		{
 			value = value.Trim();
-			return value.IsEmpty ? "" : Regex.Unescape(value.ToString());
+			if (value.IsEmpty)
+				return string.Empty;
+
+			if (value.IndexOf('\\') < 0)
+				return value.ToString();
+
+			return Regex.Unescape(value.ToString());
 		}
 
 		private static int ParseInt(string? value)
@@ -112,11 +118,11 @@ public static class XmlFormat
 		private static float ParseFloat(string? value)
 		{
 			return float.TryParse(
-			value,
-			NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint,
-			CultureInfo.InvariantCulture,
-			out float result
-		) ? result : 0;
+				value,
+				NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint,
+				CultureInfo.InvariantCulture,
+				out float result
+			) ? result : 0;
 		}
 
 		public void OnBeginTag(ReadOnlySpan<char> name, int line, int column)
