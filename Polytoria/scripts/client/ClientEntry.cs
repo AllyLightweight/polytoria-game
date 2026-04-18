@@ -457,7 +457,7 @@ public sealed partial class ClientEntry : Node3D
 	{
 		if (@event.IsActionPressed("toggle_fullscreen"))
 		{
-			ClientSettings.Singleton.SetSetting("UseFullscreen", !ClientSettings.Singleton.GetSetting<bool>("UseFullscreen"));
+			ClientSettingsService.Instance.Set(ClientSettingKeys.Display.Fullscreen, !ClientSettingsService.Instance.Get<bool>(ClientSettingKeys.Display.Fullscreen));
 		}
 		base._UnhandledKeyInput(@event);
 	}

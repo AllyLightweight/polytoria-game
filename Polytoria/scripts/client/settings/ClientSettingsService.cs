@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using Godot;
+using Polytoria.Shared;
 using Polytoria.Shared.Settings;
 using FileAccess = Godot.FileAccess;
 
@@ -32,6 +33,17 @@ public sealed partial class ClientSettingsService : Node, ISettingsContext
 		bool settingsExists = FileAccess.FileExists(SettingsPath);
 		Load();
 		ApplyDefaults();
+
+		RenderingMethodOption renderingMethod = Get<RenderingMethodOption>(ClientSettingKeys.Graphics.RenderingMethod);
+		RenderingDeviceSwitcher.RenderingDeviceEnum gdMethod = renderingMethod switch
+		{
+			RenderingMethodOption.Standard => RenderingDeviceSwitcher.RenderingDeviceEnum.Forward,
+			RenderingMethodOption.Performance => RenderingDeviceSwitcher.RenderingDeviceEnum.Mobile,
+			RenderingMethodOption.Compatibility => RenderingDeviceSwitcher.RenderingDeviceEnum.GLCompatibility,
+			_ => RenderingDeviceSwitcher.RenderingDeviceEnum.Forward
+		};
+
+		RenderingDeviceSwitcher.Switch(gdMethod);
 
 		if (!settingsExists)
 		{
