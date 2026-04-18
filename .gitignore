@@ -87,3 +87,6 @@ TestResults/
 
 # Misc
 ers
+
+.DS_Store
+Thumbs.db
