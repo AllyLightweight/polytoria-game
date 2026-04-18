@@ -20,10 +20,6 @@ func _export_begin(features: PackedStringArray, is_debug: bool, path: String, fl
 	if features.has("beta"):
 		ProjectSettings.set_setting("debug/settings/stdout/verbose_stdout", true)
 	
-	# Lower the rendering method for arm
-	if features.has("arm64"):
-		ProjectSettings.set_setting("rendering/renderer/rendering_method", "mobile")
-	
 	ProjectSettings.save()
 
 func _export_end() -> void:
