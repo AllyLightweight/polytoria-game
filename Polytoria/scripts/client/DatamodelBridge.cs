@@ -159,7 +159,7 @@ public partial class DatamodelBridge : Node3D
 
 
 		Vector3I coord = GetChunkCoord(part.Position, scaleLevel);
-		return new ChunkKey { Coord = coord, Material = part.Material, Shape = part.Shape, IsTransparent = part.Color.A < 1f, ScaleLevel = scaleLevel };
+		return new ChunkKey { Coord = coord, Material = part.Material, Shape = part.Shape, IsTransparent = part.Color.A < 1f, CastShadows = part.CastShadows, ScaleLevel = scaleLevel };
 	}
 
 	private static Vector3I GetChunkCoord(Vector3 pos, uint scaleLevel = 1)
@@ -214,6 +214,7 @@ public partial class DatamodelBridge : Node3D
 			RenderingServer.InstanceSetScenario(rid, _scenario);
 			RenderingServer.InstanceSetBase(rid, mm.GetRid());
 			RenderingServer.InstanceSetTransform(rid, Transform3D.Identity);
+			RenderingServer.InstanceGeometrySetCastShadowsSetting(rid, key.CastShadows ? RenderingServer.ShadowCastingSetting.On : RenderingServer.ShadowCastingSetting.Off);
 
 			Material mat = GetMaterial(part.Material, part.Color.A < 1f);
 			RenderingServer.InstanceGeometrySetMaterialOverride(rid, mat.GetRid());
@@ -349,7 +350,7 @@ public partial class DatamodelBridge : Node3D
 	public static bool IsPartEligible(Part part)
 	{
 		if (part.IsHidden || part.IsInTemporary) return false;
-		if (part.Anchored && !part.OverrideNoMultiMesh && part.CastShadows)
+		if (part.Anchored && !part.OverrideNoMultiMesh)
 		{
 			if (!IsInstanceValid(part.GDNode3D) || !part.GDNode3D.IsInsideTree()) return false;
 			if (part.IsDeleted) return false;
@@ -371,6 +372,7 @@ public partial class DatamodelBridge : Node3D
 		public Part.PartMaterialEnum Material;
 		public Part.ShapeEnum Shape;
 		public bool IsTransparent;
+		public bool CastShadows;
 		public uint ScaleLevel;
 	}
 
