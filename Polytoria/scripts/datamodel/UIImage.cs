@@ -5,6 +5,8 @@
 using Godot;
 using Polytoria.Attributes;
 using Polytoria.Datamodel.Resources;
+using Polytoria.Enums;
+using System;
 
 namespace Polytoria.Datamodel;
 
@@ -16,6 +18,7 @@ public partial class UIImage : UIField
 	private ImageAsset? _imageAsset;
 	private string _imageID = "";
 	private ImageTypeEnum _imageType;
+	private TextureFilterEnum _textureFilter;
 	private Color _color = new(1, 1, 1, 1);
 	private ImageStretchModeEnum _stretchMode = ImageStretchModeEnum.Stretch;
 
@@ -92,6 +95,23 @@ public partial class UIImage : UIField
 				ImageStretchModeEnum.Centered => TextureRect.StretchModeEnum.KeepAspectCentered,
 				ImageStretchModeEnum.Covered => TextureRect.StretchModeEnum.KeepAspectCovered,
 				_ => TextureRect.StretchModeEnum.Scale
+			};
+			OnPropertyChanged();
+		}
+	}
+
+	[Editable, ScriptProperty, DefaultValue(TextureFilterEnum.Linear)]
+	public TextureFilterEnum TextureFilter
+	{
+		get => _textureFilter;
+		set
+		{
+			_textureFilter = value;
+			GDTextureRect.TextureFilter = value switch
+			{
+				TextureFilterEnum.Nearest => CanvasItem.TextureFilterEnum.Nearest,
+				TextureFilterEnum.Linear => CanvasItem.TextureFilterEnum.Linear,
+				_ => throw new IndexOutOfRangeException("Texture filter mode out of range"),
 			};
 			OnPropertyChanged();
 		}

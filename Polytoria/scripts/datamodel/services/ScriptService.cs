@@ -96,6 +96,7 @@ public sealed partial class ScriptService : Instance
 		{ "FontWeight", typeof(FontWeightEnum) },
 		{ "MeshAnimationType", typeof(MeshAnimationAsset.MeshAnimationTypeEnum) },
 		{ "ParticleOrientation", typeof(Particles.ParticleOrientationEnum) },
+		{ "TextureFilter", typeof(TextureFilterEnum) },
 #if CREATOR
 		{ "CreatorToolMode", typeof(ToolModeEnum) },
 		{ "AddonPermission", typeof(CreatorAddons.AddonPermissionEnum) },

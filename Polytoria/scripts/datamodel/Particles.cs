@@ -8,6 +8,7 @@ using Polytoria.Datamodel.Data;
 using Polytoria.Datamodel.Resources;
 using Polytoria.Enums;
 using Polytoria.Utils;
+using System;
 
 namespace Polytoria.Datamodel;
 
@@ -21,8 +22,7 @@ public sealed partial class Particles : Dynamic
 	private double _aabbUpdateTimer = 0;
 
 	private ImageAsset? _asset;
-	private string _imageID = "";
-	private ImageTypeEnum _imageType;
+	private TextureFilterEnum _textureFilter;
 	private ColorSeries _color = new();
 	private NumberRange _lifetime = new() { Min = 0.5f, Max = 1f };
 	private int _amount = 8;
@@ -77,28 +77,19 @@ public sealed partial class Particles : Dynamic
 		}
 	}
 
-	[Editable, ScriptProperty]
-	[Obsolete("Use Image instead")]
-	public string ImageID
+	[Editable, ScriptProperty, DefaultValue(TextureFilterEnum.Linear)]
+	public TextureFilterEnum TextureFilter
 	{
-		get => _imageID;
+		get => _textureFilter;
 		set
 		{
-			_imageID = value;
-			CreatePTImageAsset();
-			OnPropertyChanged();
-		}
-	}
-
-	[Editable, ScriptProperty]
-	[Obsolete("Use Image instead")]
-	public ImageTypeEnum ImageType
-	{
-		get => _imageType;
-		set
-		{
-			_imageType = value;
-			CreatePTImageAsset();
+			_textureFilter = value;
+			_material.TextureFilter = value switch
+			{
+				TextureFilterEnum.Nearest => BaseMaterial3D.TextureFilterEnum.NearestWithMipmaps,
+				TextureFilterEnum.Linear => BaseMaterial3D.TextureFilterEnum.LinearWithMipmaps,
+				_ => throw new IndexOutOfRangeException("Texture filter mode out of range"),
+			};
 			OnPropertyChanged();
 		}
 	}
@@ -340,19 +331,6 @@ public sealed partial class Particles : Dynamic
 
 			OnPropertyChanged();
 		}
-	}
-
-	private void CreatePTImageAsset()
-	{
-		if (!uint.TryParse(_imageID, out uint result))
-		{
-			return;
-		}
-
-		PTImageAsset polyImg = New<PTImageAsset>();
-		Image = polyImg;
-		polyImg.ImageType = _imageType;
-		polyImg.ImageID = result;
 	}
 
 	private void OnResourceLoaded(Resource tex)

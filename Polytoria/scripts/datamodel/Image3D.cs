@@ -5,7 +5,9 @@
 using Godot;
 using Polytoria.Attributes;
 using Polytoria.Datamodel.Resources;
+using Polytoria.Enums;
 using Polytoria.Shared;
+using System;
 
 namespace Polytoria.Datamodel;
 
@@ -26,6 +28,7 @@ public sealed partial class Image3D : Dynamic
 	private bool _castShadows;
 	private bool _shaded;
 	private bool _faceCamera;
+	private TextureFilterEnum _textureFilter;
 
 	[Editable, ScriptProperty]
 	public ImageAsset? Image
@@ -145,6 +148,23 @@ public sealed partial class Image3D : Dynamic
 		{
 			_faceCamera = value;
 			_material.BillboardMode = value ? BaseMaterial3D.BillboardModeEnum.Enabled : BaseMaterial3D.BillboardModeEnum.Disabled;
+			OnPropertyChanged();
+		}
+	}
+
+	[Editable, ScriptProperty, DefaultValue(TextureFilterEnum.Linear)]
+	public TextureFilterEnum TextureFilter
+	{
+		get => _textureFilter;
+		set
+		{
+			_textureFilter = value;
+			_material.TextureFilter = value switch
+			{
+				TextureFilterEnum.Nearest => BaseMaterial3D.TextureFilterEnum.NearestWithMipmaps,
+				TextureFilterEnum.Linear => BaseMaterial3D.TextureFilterEnum.LinearWithMipmaps,
+				_ => throw new IndexOutOfRangeException("Texture filter mode out of range"),
+			};
 			OnPropertyChanged();
 		}
 	}
