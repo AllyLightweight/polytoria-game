@@ -683,6 +683,7 @@ public sealed partial class Player : NPC
 		{
 			UnequipTool();
 		}
+		Velocity = Vector3.Zero;
 		if (!Root.Network.IsServer) return; // Respawn on server only
 
 		// Respawn on client
@@ -810,6 +811,7 @@ public sealed partial class Player : NPC
 		else
 		{
 			Position = DefaultSpawnLocation;
+			Rotation = new(0, 0, 0);
 		}
 
 		// Spawn at custom position
@@ -911,7 +913,7 @@ public sealed partial class Player : NPC
 		{
 			ptmodel.StopRagdoll();
 		}
-		CharacterVelocity = Vector3.Zero;
+		Velocity = Vector3.Zero;
 
 		ResetAppearance();
 		WrapToSpawnPoint();

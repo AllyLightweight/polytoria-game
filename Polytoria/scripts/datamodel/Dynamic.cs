@@ -825,13 +825,13 @@ public partial class Dynamic : Instance
 
 	internal Vector3 GetGlobalPosition()
 	{
-		return GetGlobalTransform().Origin;
+		return GDNode3D.GlobalPosition;
 	}
 
 	internal void SetGlobalPosition(Vector3 to)
 	{
-		var t = GetGlobalTransform();
-		SetGlobalTransform(new Transform3D(t.Basis, to));
+		GDNode3D.GlobalPosition = to;
+		ForceUpdateTransform();
 	}
 
 	internal Vector3 GetLocalPosition()
