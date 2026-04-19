@@ -56,6 +56,14 @@ public static class Vector3Extension
 		);
 	}
 
+	public static Vector3 SanitizeNaN(this Vector3 v, float fallback = 0f)
+	{
+		return new(
+			float.IsNaN(v.X) ? fallback : v.X,
+			float.IsNaN(v.Y) ? fallback : v.Y,
+			float.IsNaN(v.Z) ? fallback : v.Z
+		);
+	}
 }
 
 public static class Transform3DExtension

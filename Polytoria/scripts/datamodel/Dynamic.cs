@@ -90,7 +90,7 @@ public partial class Dynamic : Instance
 		}
 		set
 		{
-			GDNode3D.GlobalRotationDegrees = value.FlipEuler();
+			GDNode3D.GlobalRotationDegrees = value.FlipEuler().SanitizeNaN();
 			if (AutoUpdateNetTransform)
 			{
 				UpdateNetTransformReliable();
@@ -105,11 +105,11 @@ public partial class Dynamic : Instance
 		get => GetGlobalTransform().Basis.Scale;
 		set
 		{
-			Vector3 scale = new(
+			Vector3 scale = new Vector3(
 				Mathf.Max(value.X, MinScale),
 				Mathf.Max(value.Y, MinScale),
 				Mathf.Max(value.Z, MinScale)
-			);
+			).SanitizeNaN(MinScale);
 
 			var oldN = NodeSize;
 			NodeSize = scale;
@@ -149,7 +149,7 @@ public partial class Dynamic : Instance
 		}
 		set
 		{
-			GDNode3D.RotationDegrees = value.FlipEuler();
+			GDNode3D.RotationDegrees = value.FlipEuler().SanitizeNaN();
 			if (AutoUpdateNetTransform)
 			{
 				UpdateNetTransformReliable();
@@ -789,11 +789,11 @@ public partial class Dynamic : Instance
 
 	internal void ApplyLocalSize(Vector3 localSize)
 	{
-		Vector3 scale = new(
+		Vector3 scale = new Vector3(
 			Mathf.Max(localSize.X, MinScale),
 			Mathf.Max(localSize.Y, MinScale),
 			Mathf.Max(localSize.Z, MinScale)
-		);
+		).SanitizeNaN(MinScale);
 
 		Vector3 parentScale = GetParentScale();
 		NodeSize = scale * parentScale;
@@ -863,16 +863,16 @@ public partial class Dynamic : Instance
 		if (_oldGlobalTransformApplied == to) return;
 		_oldGlobalTransformApplied = to;
 
-		Vector3 scale = new(
+		Vector3 scale = new Vector3(
 			to.Basis.Column0.Length(),
 			to.Basis.Column1.Length(),
 			to.Basis.Column2.Length()
-		);
+		).SanitizeNaN();
 
 		var oldN = NodeSize;
 		NodeSize = scale;
 
-		GDNode3D.GlobalTransform = new(to.Basis.Orthonormalized(), to.Origin);
+		GDNode3D.GlobalTransform = new(to.Basis.Orthonormalized(), to.Origin.SanitizeNaN());
 		PropagateParentSizeChanged(oldN);
 	}
 
@@ -882,15 +882,15 @@ public partial class Dynamic : Instance
 		if (_oldLocalTransformApplied == to) return;
 		_oldLocalTransformApplied = to;
 
-		Vector3 scale = new(
+		Vector3 scale = new Vector3(
 			to.Basis.Column0.Length(),
 			to.Basis.Column1.Length(),
 			to.Basis.Column2.Length()
-		);
+		).SanitizeNaN();
 
 		var oldN = NodeSize;
 		NodeSize = scale * GetParentScale();
-		GDNode3D.Transform = new(to.Basis.Orthonormalized(), to.Origin);
+		GDNode3D.Transform = new(to.Basis.Orthonormalized(), to.Origin.SanitizeNaN());
 		PropagateParentSizeChanged(oldN);
 	}
 
