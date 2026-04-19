@@ -29,13 +29,13 @@ public partial class TextEditorRoot : Node
 	[Export] private TextEditorFind _finder = null!;
 	[Export] private Label _diagLabel = null!;
 
-	private Color _color_danger = Color.FromString("D77C79", Colors.White);
-	private Color _color_orange = Color.FromString("E6A472", Colors.White);
-	private Color _color_warn = Color.FromString("F4CF86", Colors.White);
-	private Color _color_success = Color.FromString("C2C77B", Colors.White);
-	private Color _color_purple = Color.FromString("C0A7C7", Colors.White);
-	private Color _color_gray = Color.FromString("A7A8A7", Colors.White);
-	private Color _color_white = Colors.White;
+	public static Color ColorDanger { get; private set; } = Color.FromString("D77C79", Colors.White);
+	public static Color ColorOrange { get; private set; } = Color.FromString("E6A472", Colors.White);
+	public static Color ColorWarn { get; private set; } = Color.FromString("F4CF86", Colors.White);
+	public static Color ColorSuccess { get; private set; } = Color.FromString("C2C77B", Colors.White);
+	public static Color ColorPurple { get; private set; } = Color.FromString("C0A7C7", Colors.White);
+	public static Color ColorGrey { get; private set; } = Color.FromString("A7A8A7", Colors.White);
+	public static Color ColorWhite { get; private set; } = Colors.White;
 
 	private string _oldText = "";
 	private CodeHighlighter _highlighter = null!;
@@ -191,18 +191,19 @@ public partial class TextEditorRoot : Node
 
 		foreach (string item in LuaCompletionService.LuaKeywords)
 		{
-			_highlighter.AddKeywordColor(item, _color_danger);
+			_highlighter.AddKeywordColor(item, ColorDanger);
 		}
 
-		_highlighter.AddColorRegion("\"", "\"", _color_warn);
-		_highlighter.AddColorRegion("'", "'", _color_warn);
-		_highlighter.AddColorRegion("[[", "]]", _color_warn);
-		_highlighter.AddColorRegion("--[[", "]]", _color_gray);
-		_highlighter.AddColorRegion("--", "", _color_gray);
-		_highlighter.FunctionColor = _color_warn;
-		_highlighter.MemberVariableColor = _color_white;
-		_highlighter.NumberColor = _color_success;
-		_highlighter.SymbolColor = _color_white;
+		_highlighter.AddColorRegion("\"", "\"", ColorWarn);
+		_highlighter.AddColorRegion("'", "'", ColorWarn);
+		_highlighter.AddColorRegion("`", "`", ColorWarn);
+		_highlighter.AddColorRegion("[[", "]]", ColorWarn);
+		_highlighter.AddColorRegion("--[[", "]]", ColorGrey);
+		_highlighter.AddColorRegion("--", "", ColorGrey);
+		_highlighter.FunctionColor = ColorWarn;
+		_highlighter.MemberVariableColor = ColorWhite;
+		_highlighter.NumberColor = ColorSuccess;
+		_highlighter.SymbolColor = ColorWhite;
 
 		CodeEditor.AddStringDelimiter("\"", "\"", true);
 		CodeEditor.AddStringDelimiter("'", "'", true);
