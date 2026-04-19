@@ -50,6 +50,9 @@ public class PTAssetProvider : IAssetProvider
 					// Remove arbitrary nodes that may come with the GLTF (eg. Rigidbodies)
 					RemoveNonMeshNodes(scene);
 
+					// Set mipmap texture filter for meshes
+					SetMipmapTextureFilter(scene);
+
 					TaskCompletionSource<PackedScene> callback = new();
 
 					Callable.From(() =>
@@ -138,6 +141,32 @@ public class PTAssetProvider : IAssetProvider
 			if (!isMesh && !isSkeleton && !isExactNode3D)
 			{
 				child.Free();
+			}
+		}
+	}
+
+	private static void SetMipmapTextureFilter(Node node)
+	{
+		foreach (Node child in node.GetChildren())
+		{
+			SetMipmapTextureFilter(child);
+
+			if (child is MeshInstance3D meshInstance)
+			{
+				for (int s = 0; s < meshInstance.Mesh.GetSurfaceCount(); s++)
+				{
+					if (meshInstance.GetActiveMaterial(s) is BaseMaterial3D material)
+					{
+						if (material.AlbedoTexture is ImageTexture albedoTex)
+						{
+							Image img = albedoTex.GetImage();
+							img.GenerateMipmaps();
+							material.AlbedoTexture = ImageTexture.CreateFromImage(img);
+						}
+
+						material.TextureFilter = BaseMaterial3D.TextureFilterEnum.LinearWithMipmaps;
+					}
+				}
 			}
 		}
 	}
