@@ -29,11 +29,6 @@ jobs:
           use-dotnet: true
           include-templates: false
           cache: true
-      - name: Clone Lua Tests
-        uses: actions/checkout@v5
-        with:
-          repository: Polytoria/lua-tests
-          path: Polytoria/lua-tests
       - name: Test Datamodel
         run: |
           dotnet --version
@@ -41,4 +36,4 @@ jobs:
           cd Polytoria
           dotnet restore
           godot --headless --verbose --build-solutions --quit
-          godot --path . -dmtest -proj lua-tests
+          godot --path . -dmtest -proj ../lua-tests
