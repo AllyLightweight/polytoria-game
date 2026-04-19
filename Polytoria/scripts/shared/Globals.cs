@@ -480,7 +480,7 @@ public sealed partial class Globals : Node
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 	}
 
-	public async void Quit(bool force = false)
+	public async void Quit(bool force = false, int code = 0)
 	{
 #if CREATOR
 		// Request confirmation from interface
@@ -506,7 +506,7 @@ public sealed partial class Globals : Node
 			CurrentAppEntryNode?.QueueFree();
 			Callable.From(() =>
 			{
-				GetTree().Quit();
+				GetTree().Quit(code);
 			}).CallDeferred();
 		}).CallDeferred();
 	}

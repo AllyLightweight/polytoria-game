@@ -480,7 +480,7 @@ public static partial class PackedFormat
 		};
 	}
 
-	public static void LoadPackedWorldFile(World root, string filePath, string entryPath)
+	public static void LoadPackedWorldFile(World root, string filePath, string? entryPath = null)
 	{
 		using FileStream fs = File.OpenRead(filePath);
 		using ZipArchive archive = new(fs, ZipArchiveMode.Read);

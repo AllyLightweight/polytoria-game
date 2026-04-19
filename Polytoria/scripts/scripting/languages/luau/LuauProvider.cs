@@ -7,6 +7,9 @@ using Polytoria.Attributes;
 using Polytoria.Datamodel;
 using Polytoria.Datamodel.Resources;
 using Polytoria.Datamodel.Services;
+#if DEBUG
+using Polytoria.DatamodelTest;
+#endif
 using Polytoria.Enums;
 using Polytoria.Scripting.Extensions;
 using Polytoria.Scripting.Libraries;
@@ -181,6 +184,14 @@ public sealed partial class LuauProvider : ScriptLanguageProvider
 		state.Register("time", LuaTime);
 		state.Register("require", LuaRequire);
 		state.Register("pcall", LuaPCall);
+
+#if DEBUG
+		// Test special function
+		if (DatamodelTestEntry.IsTesting)
+		{
+			state.Register("quit", LuaDMTestQuit);
+		}
+#endif
 
 		// Randomize on start
 		GD.Randomize();
@@ -903,6 +914,23 @@ public sealed partial class LuauProvider : ScriptLanguageProvider
 
 		return 1;
 	}
+
+#if DEBUG
+	public static int LuaDMTestQuit(IntPtr L)
+	{
+		LuaState lua = LuaState.FromIntPtr(L);
+
+		if (!lua.IsNumber(1))
+		{
+			return lua.Error("quit requires an exit code");
+		}
+
+		Globals.Singleton.Quit(force: true, code: (int)lua.ToNumber(1));
+
+		return 0;
+	}
+
+#endif
 
 	public static void SetYieldTask(LuaState state, Task<int> tsk)
 	{

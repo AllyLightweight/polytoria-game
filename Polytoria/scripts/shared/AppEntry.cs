@@ -4,6 +4,9 @@
 
 using Godot;
 using Polytoria.Client;
+#if DEBUG
+using Polytoria.DatamodelTest;
+#endif
 using Polytoria.DocsGen;
 using System.Collections.Generic;
 using static Polytoria.Shared.Globals;
@@ -33,6 +36,18 @@ public partial class AppEntry : Node
 			Globals.Singleton.Quit();
 			return;
 		}
+
+#if DEBUG
+		// Datamodel test block
+		bool isDMTest = cmdargs.ContainsKey("dmtest");
+		if (isDMTest)
+		{
+			DatamodelTestEntry dt = new();
+			AddChild(dt);
+			dt.Entry();
+			return;
+		}
+#endif
 
 		AppEntryEnum entry = AppEntryEnum.Client;
 		if (OS.HasFeature("client"))
