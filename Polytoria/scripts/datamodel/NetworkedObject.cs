@@ -167,16 +167,18 @@ public partial class NetworkedObject : IScriptObject
 				return;
 			}
 
+			string setto = value;
+
 			if (GetType().IsDefined(typeof(StaticAttribute), false))
 				throw new InvalidOperationException($"Cannot set Name on static type '{GetType().Name}'.");
-			if (string.IsNullOrWhiteSpace(value))
-				throw new InvalidOperationException($"Name cannot be empty");
+			if (string.IsNullOrWhiteSpace(setto))
+				setto = ClassName;
 			if (this is Instance preI)
 			{
 				preI.RemoveNameFromParent();
 			}
 			UnregisterName();
-			_name = EnforceName(value);
+			_name = EnforceName(setto);
 			RegisterName();
 			if (this is Instance postI)
 			{
