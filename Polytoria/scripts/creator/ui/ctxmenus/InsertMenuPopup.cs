@@ -89,7 +89,7 @@ public partial class InsertMenuPopup : PopupPanel
 		},
 		[new() { Title = "Physics" }] = new()
 		{
-			"PhysicalModel",
+			"RigidBody",
 			"BodyPosition",
 			"Grabbable",
 		},

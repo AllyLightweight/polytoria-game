@@ -198,7 +198,6 @@ public sealed partial class CreatorSelections : Instance
 
 		Instance model = asWhat switch
 		{
-			GroupAsEnum.PhysicalModel => New<PhysicalModel>(commonParent),
 			GroupAsEnum.Folder => New<Folder>(commonParent),
 			_ => New<Model>(commonParent),
 		};

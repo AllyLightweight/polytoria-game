@@ -133,7 +133,7 @@ public partial class Explosion : Dynamic
 			{
 				if (e.Anchored && !AffectAnchored && AffectPredicate == null) continue;
 
-				RigidBody3D body = e.RigidBody;
+				RigidBody3D body = e.GDRigidBody;
 				Vector3 direction = body.GlobalTransform.Origin - GetGlobalTransform().Origin;
 				float distance = direction.Length();
 				bool unanchor = true;

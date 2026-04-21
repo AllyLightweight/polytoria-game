@@ -750,8 +750,8 @@ public partial class Dynamic : Instance
 			}
 		}
 
-		// Destroy entity/physicalModel under part destroy height
-		if (Root != null && Root.Environment != null && this is Entity or PhysicalModel)
+		// Destroy entity/rigidbodies under part destroy height
+		if (Root != null && Root.Environment != null && this is Entity or RigidBody)
 		{
 			if (Position.Y <= Root.Environment.PartDestroyHeight)
 			{

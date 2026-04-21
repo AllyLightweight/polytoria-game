@@ -935,6 +935,10 @@ public static partial class PolyFormat
 		{
 			className = "World";
 		}
+		else if (className == "PhysicalModel")
+		{
+			className = "RigidBody";
+		}
 
 		return className;
 	}

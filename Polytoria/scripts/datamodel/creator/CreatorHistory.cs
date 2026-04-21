@@ -375,7 +375,6 @@ public sealed partial class CreatorHistory : Instance
 	public enum GroupAsEnum
 	{
 		Model,
-		PhysicalModel,
 		Folder
 	}
 }

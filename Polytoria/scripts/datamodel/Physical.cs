@@ -31,12 +31,6 @@ public partial class Physical : Dynamic
 	private bool _canCollide = true;
 	private Vector3 _velocity = Vector3.Zero;
 	private Vector3 _angularVelocity = Vector3.Zero;
-	private bool _useGravity = true;
-	private float _mass;
-	private float _friction;
-	private float _drag;
-	private float _angularDrag;
-	private float _bounciness;
 
 	private CollisionObject3D? _registeredCollisionBody;
 
@@ -229,104 +223,7 @@ public partial class Physical : Dynamic
 		}
 	}
 
-	[Editable, ScriptProperty, DefaultValue(true)]
-	public virtual bool UseGravity
-	{
-		get => _useGravity;
-		set
-		{
-			if (_useGravity == value)
-			{
-				return;
-			}
-
-			_useGravity = value;
-
-			OnPropertyChanged();
-		}
-	}
-
-	[Editable, ScriptProperty, DefaultValue(1f)]
-	public virtual float Mass
-	{
-		get => _mass;
-		set
-		{
-			if (_mass == value)
-			{
-				return;
-			}
-
-			_mass = value;
-			OnPropertyChanged();
-		}
-	}
-
-	[Editable, ScriptProperty, DefaultValue(0.6f)]
-	public virtual float Friction
-	{
-		get => _friction;
-		set
-		{
-			if (_friction == value)
-			{
-				return;
-			}
-
-			_friction = value;
-			OnPropertyChanged();
-		}
-	}
-
-	[Editable, ScriptProperty, DefaultValue(0)]
-	public virtual float Drag
-	{
-		get => _drag;
-		set
-		{
-			if (_drag == value)
-			{
-				return;
-			}
-
-			_drag = value;
-			OnPropertyChanged();
-		}
-	}
-
-	[Editable, ScriptProperty, DefaultValue(0)]
-	public virtual float AngularDrag
-	{
-		get => _angularDrag;
-		set
-		{
-			if (_angularDrag == value)
-			{
-				return;
-			}
-
-			_angularDrag = value;
-			OnPropertyChanged();
-		}
-	}
-
-	[Editable, ScriptProperty, DefaultValue(0)]
-	public virtual float Bounciness
-	{
-		get => _bounciness;
-		set
-		{
-			if (_bounciness == value)
-			{
-				return;
-			}
-
-			_bounciness = value;
-			OnPropertyChanged();
-		}
-	}
-
-	public PhysicalModel? PhysicalRoot { get; private set; }
+	public RigidBody? PhysicalRoot { get; private set; }
 
 	internal bool OverrideCanCollide = false;
 	internal bool OverrideCanCollideTo = false;
@@ -363,7 +260,7 @@ public partial class Physical : Dynamic
 		{
 			Type ct = current.GetType();
 
-			if (current is PhysicalModel pr)
+			if (current is RigidBody pr)
 			{
 				PhysicalRoot = pr;
 				break;
@@ -401,7 +298,7 @@ public partial class Physical : Dynamic
 
 		if (this is Entity e)
 		{
-			e.RigidBody.GravityScale = 2;
+			e.GDRigidBody.GravityScale = 2;
 		}
 
 		if (Root != null)

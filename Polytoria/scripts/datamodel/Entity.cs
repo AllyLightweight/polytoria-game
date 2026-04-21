@@ -8,7 +8,7 @@ using Polytoria.Attributes;
 namespace Polytoria.Datamodel;
 
 [Abstract]
-public abstract partial class Entity : PhysicalModel
+public abstract partial class Entity : RigidBody
 {
 	private bool _isSpawn = false;
 
@@ -89,12 +89,12 @@ public abstract partial class Entity : PhysicalModel
 		if (Color.A > 0.5)
 		{
 			// Set layer for solid
-			RigidBody.CollisionLayer = 1 << 0 | 1 << 5;
+			GDRigidBody.CollisionLayer = 1 << 0 | 1 << 5;
 		}
 		else
 		{
 			// Set layer for transparent
-			RigidBody.CollisionLayer = 1;
+			GDRigidBody.CollisionLayer = 1;
 		}
 	}
 }

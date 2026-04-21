@@ -15,7 +15,7 @@ using System.Linq;
 namespace Polytoria.Datamodel;
 
 [Instantiable]
-public sealed partial class Tool : PhysicalModel
+public sealed partial class Tool : RigidBody
 {
 	private bool _droppable = true;
 	private ImageAsset? _iconImage;
@@ -319,7 +319,7 @@ public sealed partial class Tool : PhysicalModel
 
 	protected override void ApplyFreeze(bool to)
 	{
-		RigidBody.Freeze = to;
+		GDRigidBody.Freeze = to;
 		base.ApplyFreeze(to);
 	}
 

@@ -295,18 +295,6 @@ public sealed partial class Menu : PanelContainer
 					}
 				},
 				new MenuButtonItem() {
-					Text = "Group Physical",
-					KeyShortcut = new()
-					{
-						Events = [
-							new InputEventKey() { CtrlPressed = true, ShiftPressed = true, Keycode = Key.G }
-						]
-					},
-					Pressed = () => {
-						World.Current?.CreatorContext.Selections.GroupSelected(Datamodel.Creator.CreatorHistory.GroupAsEnum.PhysicalModel);
-					}
-				},
-				new MenuButtonItem() {
 					Text = "Group Folder",
 					KeyShortcut = new()
 					{

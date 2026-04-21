@@ -4,16 +4,15 @@
 
 using Godot;
 using Polytoria.Attributes;
-using Polytoria.Datamodel.Interfaces;
 using Polytoria.Utils;
 using System;
 
 namespace Polytoria.Datamodel;
 
 [Instantiable]
-public partial class PhysicalModel : Physical, IGroup
+public partial class RigidBody : Physical
 {
-	internal RigidBody3D RigidBody = null!;
+	internal RigidBody3D GDRigidBody = null!;
 	internal PhysicsMaterial PhysicsMat = null!;
 
 	private bool _useGravity = true;
@@ -28,11 +27,11 @@ public partial class PhysicalModel : Physical, IGroup
 	{
 		get
 		{
-			return RigidBody.LinearVelocity.Flip();
+			return GDRigidBody.LinearVelocity.Flip();
 		}
 		set
 		{
-			RigidBody.LinearVelocity = value.Flip();
+			GDRigidBody.LinearVelocity = value.Flip();
 			OnPropertyChanged();
 		}
 	}
@@ -42,17 +41,17 @@ public partial class PhysicalModel : Physical, IGroup
 	{
 		get
 		{
-			return RigidBody.AngularVelocity.FlipEuler();
+			return GDRigidBody.AngularVelocity.FlipEuler();
 		}
 		set
 		{
-			RigidBody.AngularVelocity = value.FlipEuler();
+			GDRigidBody.AngularVelocity = value.FlipEuler();
 			OnPropertyChanged();
 		}
 	}
 
 	[Editable, ScriptProperty, DefaultValue(true)]
-	public override bool UseGravity
+	public bool UseGravity
 	{
 		get => _useGravity;
 		set
@@ -64,14 +63,14 @@ public partial class PhysicalModel : Physical, IGroup
 
 			_useGravity = value;
 
-			RigidBody.GravityScale = value ? 2 : 0;
+			GDRigidBody.GravityScale = value ? 2 : 0;
 
 			OnPropertyChanged();
 		}
 	}
 
 	[Editable, ScriptProperty, DefaultValue(1f)]
-	public override float Mass
+	public float Mass
 	{
 		get => _mass;
 		set
@@ -83,14 +82,14 @@ public partial class PhysicalModel : Physical, IGroup
 
 			_mass = value;
 
-			RigidBody.Mass = Math.Max(_mass, Physical.MinMass);
+			GDRigidBody.Mass = Math.Max(_mass, Physical.MinMass);
 
 			OnPropertyChanged();
 		}
 	}
 
 	[Editable, ScriptProperty, DefaultValue(0.6f)]
-	public override float Friction
+	public float Friction
 	{
 		get => _friction;
 		set
@@ -107,7 +106,7 @@ public partial class PhysicalModel : Physical, IGroup
 	}
 
 	[Editable, ScriptProperty, DefaultValue(0)]
-	public override float Drag
+	public float Drag
 	{
 		get => _drag;
 		set
@@ -118,13 +117,13 @@ public partial class PhysicalModel : Physical, IGroup
 			}
 
 			_drag = value;
-			RigidBody.LinearDamp = value;
+			GDRigidBody.LinearDamp = value;
 			OnPropertyChanged();
 		}
 	}
 
 	[Editable, ScriptProperty, DefaultValue(0)]
-	public override float AngularDrag
+	public float AngularDrag
 	{
 		get => _angularDrag;
 		set
@@ -135,13 +134,13 @@ public partial class PhysicalModel : Physical, IGroup
 			}
 
 			_angularDrag = value;
-			RigidBody.AngularDamp = value;
+			GDRigidBody.AngularDamp = value;
 			OnPropertyChanged();
 		}
 	}
 
 	[Editable, ScriptProperty, DefaultValue(0)]
-	public override float Bounciness
+	public float Bounciness
 	{
 		get => _bounciness;
 		set
@@ -168,9 +167,9 @@ public partial class PhysicalModel : Physical, IGroup
 	{
 		base.InitGDNode();
 		PhysicsMat = new();
-		RigidBody = (RigidBody3D)GDNode;
-		RigidBody.PhysicsMaterialOverride = PhysicsMat;
-		RigidBody.GravityScale = 2;
+		GDRigidBody = (RigidBody3D)GDNode;
+		GDRigidBody.PhysicsMaterialOverride = PhysicsMat;
+		GDRigidBody.GravityScale = 2;
 	}
 
 	public override void Init()
@@ -184,15 +183,15 @@ public partial class PhysicalModel : Physical, IGroup
 	{
 		if (mode == ForceModeEnum.Force)
 		{
-			RigidBody.ApplyCentralForce(force);
+			GDRigidBody.ApplyCentralForce(force);
 		}
 		else if (mode == ForceModeEnum.Acceleration)
 		{
-			RigidBody.AddConstantCentralForce(force);
+			GDRigidBody.AddConstantCentralForce(force);
 		}
 		else if (mode == ForceModeEnum.Impulse)
 		{
-			RigidBody.ApplyCentralImpulse(force);
+			GDRigidBody.ApplyCentralImpulse(force);
 		}
 		else if (mode == ForceModeEnum.VelocityChange)
 		{
@@ -208,15 +207,15 @@ public partial class PhysicalModel : Physical, IGroup
 	{
 		if (mode == ForceModeEnum.Force)
 		{
-			RigidBody.ApplyTorque(force);
+			GDRigidBody.ApplyTorque(force);
 		}
 		else if (mode == ForceModeEnum.Acceleration)
 		{
-			RigidBody.AddConstantTorque(force);
+			GDRigidBody.AddConstantTorque(force);
 		}
 		else if (mode == ForceModeEnum.Impulse)
 		{
-			RigidBody.ApplyTorqueImpulse(force);
+			GDRigidBody.ApplyTorqueImpulse(force);
 		}
 		else if (mode == ForceModeEnum.VelocityChange)
 		{
@@ -232,15 +231,15 @@ public partial class PhysicalModel : Physical, IGroup
 	{
 		if (mode == ForceModeEnum.Force)
 		{
-			RigidBody.ApplyForce(force, position);
+			GDRigidBody.ApplyForce(force, position);
 		}
 		else if (mode == ForceModeEnum.Acceleration)
 		{
-			RigidBody.AddConstantForce(force, position);
+			GDRigidBody.AddConstantForce(force, position);
 		}
 		else if (mode == ForceModeEnum.Impulse)
 		{
-			RigidBody.ApplyImpulse(force, position);
+			GDRigidBody.ApplyImpulse(force, position);
 		}
 		else if (mode == ForceModeEnum.VelocityChange)
 		{
@@ -254,22 +253,22 @@ public partial class PhysicalModel : Physical, IGroup
 
 	internal override void ApplyAddRelativeForce(Vector3 force, ForceModeEnum mode = ForceModeEnum.Force)
 	{
-		Vector3 worldForce = RigidBody.GlobalTransform.Basis * force;
+		Vector3 worldForce = GDRigidBody.GlobalTransform.Basis * force;
 		if (mode == ForceModeEnum.Force)
 		{
-			RigidBody.ApplyCentralForce(worldForce);
+			GDRigidBody.ApplyCentralForce(worldForce);
 		}
 		else if (mode == ForceModeEnum.Acceleration)
 		{
-			RigidBody.AddConstantCentralForce(worldForce);
+			GDRigidBody.AddConstantCentralForce(worldForce);
 		}
 		else if (mode == ForceModeEnum.Impulse)
 		{
-			RigidBody.ApplyCentralImpulse(worldForce);
+			GDRigidBody.ApplyCentralImpulse(worldForce);
 		}
 		else if (mode == ForceModeEnum.VelocityChange)
 		{
-			RigidBody.LinearVelocity += worldForce;
+			GDRigidBody.LinearVelocity += worldForce;
 		}
 		else
 		{
@@ -279,23 +278,23 @@ public partial class PhysicalModel : Physical, IGroup
 
 	internal override void ApplyAddRelativeTorque(Vector3 torque, ForceModeEnum mode = ForceModeEnum.Force)
 	{
-		Vector3 worldTorque = RigidBody.GlobalTransform.Basis * torque;
+		Vector3 worldTorque = GDRigidBody.GlobalTransform.Basis * torque;
 
 		if (mode == ForceModeEnum.Force)
 		{
-			RigidBody.ApplyTorque(worldTorque);
+			GDRigidBody.ApplyTorque(worldTorque);
 		}
 		else if (mode == ForceModeEnum.Acceleration)
 		{
-			RigidBody.AddConstantTorque(worldTorque);
+			GDRigidBody.AddConstantTorque(worldTorque);
 		}
 		else if (mode == ForceModeEnum.Impulse)
 		{
-			RigidBody.ApplyTorqueImpulse(worldTorque);
+			GDRigidBody.ApplyTorqueImpulse(worldTorque);
 		}
 		else if (mode == ForceModeEnum.VelocityChange)
 		{
-			RigidBody.AngularVelocity += worldTorque;
+			GDRigidBody.AngularVelocity += worldTorque;
 		}
 		else
 		{
@@ -305,7 +304,7 @@ public partial class PhysicalModel : Physical, IGroup
 
 	protected override void ApplyFreeze(bool to)
 	{
-		RigidBody.Freeze = to;
+		GDRigidBody.Freeze = to;
 		base.ApplyFreeze(to);
 	}
 }
