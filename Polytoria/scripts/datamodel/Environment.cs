@@ -441,7 +441,7 @@ public sealed partial class Environment : Instance
 			AgentRadius = 1.25f,
 			AgentHeight = 6,
 			AgentMaxSlope = 70,
-			CellSize = 10
+			CellSize = 1,
 		};
 
 		_navTemps.Clear();
