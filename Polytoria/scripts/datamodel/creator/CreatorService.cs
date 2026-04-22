@@ -67,7 +67,7 @@ public sealed partial class CreatorService : Node, IScriptObject
 	public override void _Ready()
 	{
 		OS.LowProcessorUsageMode = true;
-		Globals.BeforeQuit += StopLocalTest;
+		Globals.BeforeQuit += OnBeforeQuit;
 		DebugServer.Start();
 
 		DisplayServer.WindowSetDropFilesCallback(Callable.From<string[]>(OnFilesDropped));
@@ -76,8 +76,28 @@ public sealed partial class CreatorService : Node, IScriptObject
 
 	public override void _ExitTree()
 	{
-		Globals.BeforeQuit -= StopLocalTest;
+		Globals.BeforeQuit -= OnBeforeQuit;
 		base._ExitTree();
+	}
+
+	private void OnBeforeQuit()
+	{
+		try
+		{
+			StopLocalTest();
+		}
+		catch (Exception ex)
+		{
+			PT.PrintErr("Error while quitting: ", ex);
+		}
+		try
+		{
+			CleanupSessions();
+		}
+		catch (Exception ex)
+		{
+			PT.PrintErr("Error while quitting: ", ex);
+		}
 	}
 
 	private async void OnFilesDropped(string[] files)
@@ -567,6 +587,14 @@ public sealed partial class CreatorService : Node, IScriptObject
 		LocalTestWorlds.Clear();
 		LocalTestIDToSession.Clear();
 		SessionToLocalTestID.Clear();
+	}
+
+	private static void CleanupSessions()
+	{
+		foreach (var session in Sessions)
+		{
+			session.Dispose();
+		}
 	}
 }
 
