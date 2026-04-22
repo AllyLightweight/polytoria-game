@@ -902,6 +902,20 @@
                   "Children": [],
                   "LinkedModel": null,
                   "IsLinkedChild": false
+                },
+                {
+                  "Name": "Coroutines",
+                  "ClassName": "ServerScript",
+                  "ID": "eac8cbb1-30f9-415d-ba4c-b3a71dd8a4e5",
+                  "Properties": {
+                    "IsEnabled": true,
+                    "LinkedScript": "802ab91a-e897-488c-918f-3eb7426f958e",
+                    "Compatibility": false,
+                    "Tags": []
+                  },
+                  "Children": [],
+                  "LinkedModel": null,
+                  "IsLinkedChild": false
                 }
               ],
               "LinkedModel": null,
