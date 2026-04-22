@@ -141,7 +141,7 @@ public partial class LogDispatcher : NetworkedObject
 	private void RegisterLogItem(LogData item)
 	{
 		// Clear loggedAt data if from server and receiver is client (time from sserver may be desynchronized with the client)
-		if (item.LogFrom == LogFromEnum.Server && Root.Network.NetworkMode == Datamodel.Services.NetworkService.NetworkModeEnum.Client)
+		if (item.LogFrom == LogFromEnum.Server && Root.Network.NetworkMode == Datamodel.Services.NetworkService.NetworkModeEnum.Client && Root.Network.IsProd)
 		{
 			item.LoggedAt = DateTime.UtcNow;
 		}
