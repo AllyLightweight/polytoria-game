@@ -500,7 +500,6 @@ public static class XmlFormat
 			instance.Name = item.Name;
 			instance.AutoInvokeReady = false;
 			instance.CallInitOverrides = false;
-			instance.OriginatedFrom = "XmlFormat";
 			instance.SetNetworkParent(parent, force: true);
 		}
 		else

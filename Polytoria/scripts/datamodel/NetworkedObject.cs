@@ -145,16 +145,12 @@ public partial class NetworkedObject : IScriptObject
 	/// <summary>
 	/// Godot node linked with this object
 	/// </summary>
-	[Export]
 	internal Node GDNode = null!;
 
 	/// <summary>
 	/// Slot node. This is where Godot child will be added to
 	/// </summary>
-	[Export]
 	internal Node SlotNode = null!;
-
-	[Export] public string? OriginatedFrom;
 
 	[Editable, ScriptProperty, SaveIgnore]
 	public string Name
