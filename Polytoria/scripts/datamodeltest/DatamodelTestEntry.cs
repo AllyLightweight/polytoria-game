@@ -13,6 +13,7 @@ namespace Polytoria.DatamodelTest;
 
 public partial class DatamodelTestEntry : Node3D
 {
+	private const float TestTimeoutSec = 30;
 	public World Root = null!;
 	public NetworkService NetworkService { get; private set; } = null!;
 	public static bool IsTesting { get; private set; } = false;
@@ -24,6 +25,13 @@ public partial class DatamodelTestEntry : Node3D
 
 	public async void Entry()
 	{
+		// Fallsafe so test doesn't last forever
+		PT.CallDeferred(async () =>
+		{
+			await Globals.Singleton.WaitAsync(TestTimeoutSec);
+			Globals.Singleton.Quit(true, 1);
+		});
+
 		var cmdargs = Globals.ReadCmdArgs();
 
 		// Setup essentials 
