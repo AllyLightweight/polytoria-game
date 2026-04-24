@@ -32,7 +32,7 @@ public sealed partial class CreatorSelections : Instance
 
 	public override void Init()
 	{
-		GDNode.AddChild(_inputHelper = new());
+		GDNode.AddChild(_inputHelper = new(), @internal: Node.InternalMode.Back);
 		_inputHelper.GodotUnhandledInputEvent += OnUnhandledInput;
 
 		SetProcess(true);

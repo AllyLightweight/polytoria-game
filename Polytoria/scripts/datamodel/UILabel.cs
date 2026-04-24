@@ -249,8 +249,8 @@ public partial class UILabel : UIView
 
 	public override void Init()
 	{
-		GDNode.AddChild(_label, false);
-		GDNode.AddChild(_richLabel, false);
+		GDNode.AddChild(_label, false, @internal: Node.InternalMode.Front);
+		GDNode.AddChild(_richLabel, false, @internal: Node.InternalMode.Front);
 		_richLabel.Text = "";
 		_richLabel.BbcodeEnabled = true;
 		_richLabel.ScrollActive = false;

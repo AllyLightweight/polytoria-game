@@ -354,7 +354,7 @@ public sealed partial class Player : NPC
 		_bubbleChat = Globals.CreateInstanceFromScene<BubbleChat>(BubbleChatScene);
 		_bubbleChat.TargetPlayer = this;
 		_bubbleChat.Visible = _useBubbleChat;
-		GDNode.AddChild(_bubbleChat);
+		GDNode.AddChild(_bubbleChat, @internal: Node.InternalMode.Back);
 		excludedBoundNodes.Add(_bubbleChat);
 
 		PlayerMovement = new DefaultMovement() { Root = Root, Target = this };
@@ -703,7 +703,7 @@ public sealed partial class Player : NPC
 		CamAttach.AutoUpdateNetTransform = false;
 
 		_remoteCamAttach = new();
-		Character?.GetAttachment(CharacterModel.CharacterAttachmentEnum.Head).GDNode.AddChild(_remoteCamAttach);
+		Character?.GetAttachment(CharacterModel.CharacterAttachmentEnum.Head).GDNode.AddChild(_remoteCamAttach, @internal: Node.InternalMode.Back);
 		_remoteCamAttach.RemotePath = _remoteCamAttach.GetPathTo(CamAttach.GDNode3D);
 
 		SetCamRemoteAttachEnabled(false);

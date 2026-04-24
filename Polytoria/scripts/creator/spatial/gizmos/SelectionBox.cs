@@ -107,10 +107,10 @@ public partial class SelectionBox : Node
 		_selectionBoxXray = stXray.Commit();
 
 		_selectionBoxMesh = new MeshInstance3D { Mesh = _selectionBox };
-		Root.GDNode.AddChild(_selectionBoxMesh);
+		Root.GDNode.AddChild(_selectionBoxMesh, @internal: Node.InternalMode.Back);
 
 		_selectionBoxXrayMesh = new MeshInstance3D { Mesh = _selectionBoxXray };
-		Root.GDNode.AddChild(_selectionBoxXrayMesh);
+		Root.GDNode.AddChild(_selectionBoxXrayMesh, @internal: Node.InternalMode.Back);
 	}
 
 	public void InvalidateBoundCache()

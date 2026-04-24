@@ -70,7 +70,7 @@ public partial class BaseAsset : NetworkedObject
 			if ((_timer == null || !Node.IsInstanceValid(_timer)) && Node.IsInstanceValid(GDNode))
 			{
 				_timer = new();
-				GDNode.AddChild(_timer);
+				GDNode.AddChild(_timer, @internal: Node.InternalMode.Back);
 				_timer.OneShot = true;
 				_timer.Timeout += DeleteTimerTimeout;
 				_timer.Start(DeleteTimeoutSec);

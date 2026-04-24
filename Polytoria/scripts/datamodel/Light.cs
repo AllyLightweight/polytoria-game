@@ -104,7 +104,7 @@ public partial class Light : Dynamic
 	public override void Init()
 	{
 #if CREATOR
-		GDNode.AddChild(new SpatialIcon(ClassName));
+		GDNode.AddChild(new SpatialIcon(ClassName), @internal: Node.InternalMode.Back);
 #endif
 		ShadowSettingsChanged += UpdateShadows;
 		base.Init();

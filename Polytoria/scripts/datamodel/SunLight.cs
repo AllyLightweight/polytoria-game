@@ -29,7 +29,7 @@ public sealed partial class SunLight : Light
 #endif
 
 #if CREATOR
-		GDNode.AddChild(_arrow = new() { Visible = false });
+		GDNode.AddChild(_arrow = new() { Visible = false }, @internal: Node.InternalMode.Back);
 #endif
 	}
 

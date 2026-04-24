@@ -99,7 +99,7 @@ public sealed partial class CaptureService : Instance
 			window.Name = "Spectator View";
 
 			window.AddChild(cam);
-			GDNode.AddChild(window);
+			GDNode.AddChild(window, @internal: Node.InternalMode.Back);
 			_cameraAttach = window;
 			_spectatorCam = cam;
 
@@ -189,7 +189,7 @@ public sealed partial class CaptureService : Instance
 
 		pivot.AddChild(cam);
 		subview.AddChild(pivot);
-		GDNode.AddChild(subview);
+		GDNode.AddChild(subview, @internal: Node.InternalMode.Back);
 
 		GUI? guiOverlay = null;
 

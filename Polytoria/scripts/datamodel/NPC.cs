@@ -974,7 +974,7 @@ public partial class NPC : Physical
 		if (Character != null)
 		{
 			Dynamic attachment = Character.GetAttachment(CharacterModel.CharacterAttachmentEnum.HandRight);
-			attachment.GDNode.AddChild(_toolRemoteTransform);
+			attachment.GDNode.AddChild(_toolRemoteTransform, @internal: Node.InternalMode.Back);
 		}
 
 		// stick and stones

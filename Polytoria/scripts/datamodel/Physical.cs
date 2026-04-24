@@ -723,11 +723,11 @@ public partial class Physical : Dynamic
 
 		if (target != null && Node.IsInstanceValid(target))
 		{
-			target.AddChild(scaleNode);
+			target.AddChild(scaleNode, @internal: Node.InternalMode.Back);
 		}
 		else
 		{
-			GDNode.AddChild(scaleNode);
+			GDNode.AddChild(scaleNode, @internal: Node.InternalMode.Back);
 		}
 
 		scaleNode.Position = config is { HasOffset: true } ? config.Offset : Vector3.Zero;

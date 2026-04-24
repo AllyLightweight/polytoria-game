@@ -248,7 +248,7 @@ public sealed partial class ClientEntry : Node3D
 				pathEntry = null;
 			}
 			FreeLook freeLook = new() { Name = "FreeLook" };
-			Root.GDNode.AddChild(freeLook, false, InternalMode.Front);
+			Root.GDNode.AddChild(freeLook, false, @internal: Node.InternalMode.Back);
 
 			freeLook.GlobalPosition = new(0, 2, -4);
 			freeLook.RotationDegrees = new(-25, 180, 0);

@@ -72,7 +72,7 @@ public sealed partial class Decal : Dynamic
 			Size = Vector3.One,
 			CullMask = 1
 		};
-		GDNode.AddChild(_decal);
+		GDNode.AddChild(_decal, @internal: Node.InternalMode.Back);
 		Energy = 1;
 
 		base.Init();

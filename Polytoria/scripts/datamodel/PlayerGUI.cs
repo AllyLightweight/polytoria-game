@@ -23,7 +23,7 @@ public partial class PlayerGUI : Instance
 	{
 		base.InitGDNode();
 		InputFallback = new InputFallbackBase() { FocusMode = Control.FocusModeEnum.Click, MouseFilter = Control.MouseFilterEnum.Pass };
-		GDNode.AddChild(InputFallback);
+		GDNode.AddChild(InputFallback, @internal: Node.InternalMode.Front);
 		InputFallback.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 	}
 
@@ -48,7 +48,6 @@ public partial class PlayerGUI : Instance
 		if (!Root.Input.IsTouchscreen) return;
 		PackedScene packed2 = GD.Load<PackedScene>(TouchControlsPath);
 		Node touchUI = packed2.Instantiate();
-		GDNode.AddChild(touchUI, true);
-		GDNode.MoveChild(touchUI, 2);
+		GDNode.AddChild(touchUI, true, @internal: Node.InternalMode.Back);
 	}
 }

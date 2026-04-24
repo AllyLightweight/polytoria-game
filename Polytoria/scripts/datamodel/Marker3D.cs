@@ -55,7 +55,7 @@ public partial class Marker3D : Dynamic
 	public override void Init()
 	{
 		_meshInstance = new MeshInstance3D();
-		GDNode.AddChild(_meshInstance);
+		GDNode.AddChild(_meshInstance, @internal: Node.InternalMode.Back);
 		RenderGizmo();
 		base.Init();
 	}

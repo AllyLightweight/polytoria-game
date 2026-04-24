@@ -445,7 +445,7 @@ public sealed partial class Particles : Dynamic
 	private void NetEmit(int count)
 	{
 		GpuParticles3D temp = (GpuParticles3D)_particles.Duplicate();
-		GDNode.AddChild(temp);
+		GDNode.AddChild(temp, @internal: Node.InternalMode.Back);
 		temp.Amount = count;
 		temp.Explosiveness = 1;
 		temp.OneShot = true;

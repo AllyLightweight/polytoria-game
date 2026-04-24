@@ -267,7 +267,7 @@ public sealed partial class CreatorHistory : Instance
 
 		CommitAction();
 		Timer t = new();
-		GDNode.AddChild(t);
+		GDNode.AddChild(t, @internal: Node.InternalMode.Back);
 
 		t.Timeout += () =>
 		{
@@ -322,7 +322,7 @@ public sealed partial class CreatorHistory : Instance
 		CommitAction();
 
 		Timer t = new();
-		GDNode.AddChild(t);
+		GDNode.AddChild(t, @internal: Node.InternalMode.Back);
 
 		t.Timeout += () =>
 		{

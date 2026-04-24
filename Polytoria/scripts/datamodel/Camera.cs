@@ -371,7 +371,7 @@ public sealed partial class Camera : Dynamic
 	{
 		base.Init();
 
-		GDNode.AddChild(_inputHelper = new());
+		GDNode.AddChild(_inputHelper = new(), @internal: Node.InternalMode.Back);
 		_inputHelper.GodotUnhandledInputEvent += OnInput;
 
 		GDNode3D.AddChild(Camera3D = new());

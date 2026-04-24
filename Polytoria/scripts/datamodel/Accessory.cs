@@ -38,7 +38,7 @@ public partial class Accessory : Dynamic
 			UpdateRotation = true,
 			UpdateScale = false
 		};
-		attachment.GDNode.AddChild(remoteTransform);
+		attachment.GDNode.AddChild(remoteTransform, @internal: Node.InternalMode.Back);
 		remoteTransform.RemotePath = remoteTransform.GetPathTo(GDNode);
 	}
 

@@ -218,7 +218,7 @@ public sealed partial class Sound : Dynamic
 			{
 				Stream = _currentStream
 			};
-			GDNode.AddChild(_audioPlayer);
+			GDNode.AddChild(_audioPlayer, @internal: Node.InternalMode.Back);
 			_audioPlayer.Finished += OnPlayerFinished;
 		}
 		else
@@ -227,7 +227,7 @@ public sealed partial class Sound : Dynamic
 			{
 				Stream = _currentStream
 			};
-			GDNode.AddChild(_audioPlayer3D);
+			GDNode.AddChild(_audioPlayer3D, @internal: Node.InternalMode.Back);
 			// check issue https://github.com/godotengine/godot/issues/23485
 			_audioPlayer3D.AttenuationFilterCutoffHz = 20500;
 			_audioPlayer3D.Finished += OnPlayerFinished;
@@ -404,7 +404,7 @@ public sealed partial class Sound : Dynamic
 		if (_audioPlayer != null)
 		{
 			AudioStreamPlayer clone = (AudioStreamPlayer)_audioPlayer.Duplicate();
-			GDNode.AddChild(clone);
+			GDNode.AddChild(clone, @internal: Node.InternalMode.Back);
 
 			clone.Stream = _audioPlayer.Stream;
 			clone.VolumeLinear = volume;
@@ -423,7 +423,7 @@ public sealed partial class Sound : Dynamic
 		if (_audioPlayer3D != null)
 		{
 			AudioStreamPlayer3D clone3D = (AudioStreamPlayer3D)_audioPlayer3D.Duplicate();
-			GDNode.AddChild(clone3D);
+			GDNode.AddChild(clone3D, @internal: Node.InternalMode.Back);
 
 			clone3D.Stream = _audioPlayer3D.Stream;
 			clone3D.VolumeLinear = volume;

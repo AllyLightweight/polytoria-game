@@ -648,7 +648,7 @@ public partial class Dynamic : Instance
 		};
 
 		_boundArea3D.AddChild(_boundCollider);
-		Root.Environment.GDNode.AddChild(_boundArea3D);
+		Root.Environment.GDNode.AddChild(_boundArea3D, @internal: Node.InternalMode.Back);
 
 		UpdateCreatorBounds();
 	}

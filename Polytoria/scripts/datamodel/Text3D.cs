@@ -338,7 +338,7 @@ public sealed partial class Text3D : Dynamic
 		if (to)
 		{
 			_subViewport = new SubViewport() { TransparentBg = true, Msaa2D = Viewport.Msaa.Disabled };
-			GDNode.AddChild(_subViewport);
+			GDNode.AddChild(_subViewport, @internal: Node.InternalMode.Back);
 			_subViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.WhenVisible;
 			_richLabel.Reparent(_subViewport);
 			_richLabel.Visible = true;

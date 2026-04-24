@@ -24,7 +24,7 @@ public sealed partial class PointLight : Light
 		LightNode = GDNode.GetNode<OmniLight3D>("OmniLight3D");
 
 #if CREATOR
-		GDNode.AddChild(_sphere = new() { Visible = false });
+		GDNode.AddChild(_sphere = new() { Visible = false }, @internal: Node.InternalMode.Back);
 #endif
 
 		base.Init();

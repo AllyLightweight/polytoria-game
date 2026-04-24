@@ -122,7 +122,7 @@ public sealed partial class Tool : RigidBody
 			{
 				Shape = new BoxShape3D() { Size = GetBounds().Size },
 			};
-			GDNode.AddChild(_toolCollision);
+			GDNode.AddChild(_toolCollision, @internal: Node.InternalMode.Back);
 			AddCollisionShape(_toolCollision);
 		}
 		else
