@@ -97,7 +97,7 @@
 	</ItemGroup>
 
 	<!-- Strip out Datamodel Tests -->
-	<ItemGroup Condition="'$(Configuration)' != 'Debug'">
+	<ItemGroup Condition="'$(Configuration)' != 'Debug' And '$(Configuration)' != 'ExportDebug'">
 		<Compile Remove="scripts/datamodeltest/**/*.cs" />
 	</ItemGroup>
 
