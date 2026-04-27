@@ -38,14 +38,13 @@ Button/styles/hover = SubResource("StyleBoxFlat_4pk3c")
 Button/styles/normal = SubResource("StyleBoxEmpty_8o6pa")
 Button/styles/pressed = SubResource("StyleBoxFlat_8qh8u")
 
-[node name="Settings" type="HBoxContainer" unique_id=1950708833 node_paths=PackedStringArray("_viewContainer", "_categoryContainer", "FirstFocus")]
+[node name="Settings" type="HBoxContainer" unique_id=1950708833 node_paths=PackedStringArray("_viewContainer", "_categoryContainer")]
 offset_right = 753.0
 offset_bottom = 232.0
 theme = ExtResource("1_8qh8u")
 script = ExtResource("1_eqv2t")
 _viewContainer = NodePath("ScrollContainer")
 _categoryContainer = NodePath("Categories/VBoxContainer")
-FirstFocus = NodePath("")
 
 [node name="Categories" type="PanelContainer" parent="." unique_id=1438611249]
 custom_minimum_size = Vector2(260, 0)

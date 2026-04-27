@@ -13,6 +13,7 @@ shader_parameter/albedo = ExtResource("1_g14c0")
 shader_parameter/use_albedo_texture = true
 shader_parameter/orm = ExtResource("3_asc4g")
 shader_parameter/use_orm_texture = true
+shader_parameter/emissive_strength = 0.0
 shader_parameter/metallic_specular = 0.150000007125
 shader_parameter/roughness = 1.0
 shader_parameter/metallic = 0.0
