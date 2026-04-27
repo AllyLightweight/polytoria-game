@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Security vulnerability
+    url: https://polytoria.com/
+    about: Please do not report vulnerabilities publicly. Use the private security reporting process described in SECURITY.md.
+
+  - name: Polytoria support
+    url: https://polytoria.com/
+    about: Account, moderation, billing, platform support, and support requests should not be filed as GitHub issues.
+
+  - name: Contributor Discord
+    url: https://discord.gg/HUgEE9FhSU
+    about: Use Discord for setup help, questions, and early contributor discussion.
