@@ -30,7 +30,7 @@ jobs:
         with:
           version: ${{ env.GODOT_VERSION }}
           use-dotnet: true
-          include-templates: true
+          include-templates: false
           cache: true
       - name: Test Build Project
         run: |
