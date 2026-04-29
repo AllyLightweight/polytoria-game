@@ -1542,11 +1542,13 @@ public sealed partial class LuauProvider : ScriptLanguageProvider
 
 		Type type = spectifyType ?? obj!.GetType();
 
-		lua.GetField(LuaState.LUA_REGISTRYINDEX, "__metatable_" + type.Name);
+		string metatableKey = "__metatable_" + type.Name;
+
+		lua.GetField(LuaState.LUA_REGISTRYINDEX, metatableKey);
 		if (lua.Type(-1) == LuaType.Nil)
 		{
 			lua.Pop(1);
-			lua.NewMetaTable(type.Name);
+			lua.NewTable();
 
 			LuaMetatable metatable = new()
 			{
@@ -1583,6 +1585,10 @@ public sealed partial class LuauProvider : ScriptLanguageProvider
 
 			lua.PushBoolean(false);
 			lua.SetField(-2, "__metatable");
+
+			// Store in metatable cache
+			lua.PushValue(-1);
+			lua.SetField(LuaState.LUA_REGISTRYINDEX, metatableKey);
 		}
 
 		lua.SetMetaTable(-2);
