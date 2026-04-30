@@ -361,6 +361,8 @@ public sealed partial class TweenService : Instance
 		private bool _looped = false;
 		private bool _parallel = true;
 		private float _speedScale = 1;
+		private TweenDirectionEnum _direction;
+		private TweenTransitionEnum _transition;
 
 		[ScriptProperty]
 		public bool Looped
@@ -396,6 +398,50 @@ public sealed partial class TweenService : Instance
 			}
 		}
 
+		[ScriptProperty]
+		public TweenDirectionEnum Direction
+		{
+			get => _direction;
+			set
+			{
+				_direction = value;
+				tween.SetEase(value switch
+				{
+					TweenDirectionEnum.In => Tween.EaseType.In,
+					TweenDirectionEnum.Out => Tween.EaseType.Out,
+					TweenDirectionEnum.InOut => Tween.EaseType.InOut,
+					TweenDirectionEnum.OutIn => Tween.EaseType.OutIn,
+					_ => throw new ArgumentOutOfRangeException(nameof(value), "Tween direction is out of range"),
+				});
+			}
+		}
+
+		[ScriptProperty]
+		public TweenTransitionEnum Transition
+		{
+			get => _transition;
+			set
+			{
+				_transition = value;
+				tween.SetTrans(value switch
+				{
+					TweenTransitionEnum.Linear => Tween.TransitionType.Linear,
+					TweenTransitionEnum.Sine => Tween.TransitionType.Sine,
+					TweenTransitionEnum.Quint => Tween.TransitionType.Quint,
+					TweenTransitionEnum.Quart => Tween.TransitionType.Quart,
+					TweenTransitionEnum.Quad => Tween.TransitionType.Quad,
+					TweenTransitionEnum.Expo => Tween.TransitionType.Expo,
+					TweenTransitionEnum.Elastic => Tween.TransitionType.Elastic,
+					TweenTransitionEnum.Cubic => Tween.TransitionType.Cubic,
+					TweenTransitionEnum.Circ => Tween.TransitionType.Circ,
+					TweenTransitionEnum.Bounce => Tween.TransitionType.Bounce,
+					TweenTransitionEnum.Back => Tween.TransitionType.Back,
+					TweenTransitionEnum.Spring => Tween.TransitionType.Spring,
+					_ => throw new ArgumentOutOfRangeException(nameof(value), "Tween transition is out of range"),
+				});
+			}
+		}
+
 		[ScriptProperty] public bool IsRunning => tween.IsRunning();
 		[ScriptProperty] public double ElapsedTime => tween.GetTotalElapsedTime();
 		[ScriptProperty] public PTSignal Finished { get; private set; } = new();
@@ -411,38 +457,14 @@ public sealed partial class TweenService : Instance
 		[ScriptMethod]
 		public TweenObject SetDirection(TweenDirectionEnum dir)
 		{
-			Tween.EaseType t = dir switch
-			{
-				TweenDirectionEnum.In => Tween.EaseType.In,
-				TweenDirectionEnum.Out => Tween.EaseType.Out,
-				TweenDirectionEnum.InOut => Tween.EaseType.InOut,
-				TweenDirectionEnum.OutIn => Tween.EaseType.OutIn,
-				_ => throw new ArgumentOutOfRangeException(nameof(dir), "Easing direction is out of range"),
-			};
-			tween.SetEase(t);
+			Direction = dir;
 			return this;
 		}
 
 		[ScriptMethod]
 		public TweenObject SetTrans(TweenTransitionEnum trans)
 		{
-			Tween.TransitionType t = trans switch
-			{
-				TweenTransitionEnum.Linear => Tween.TransitionType.Linear,
-				TweenTransitionEnum.Sine => Tween.TransitionType.Sine,
-				TweenTransitionEnum.Quint => Tween.TransitionType.Quint,
-				TweenTransitionEnum.Quart => Tween.TransitionType.Quart,
-				TweenTransitionEnum.Quad => Tween.TransitionType.Quad,
-				TweenTransitionEnum.Expo => Tween.TransitionType.Expo,
-				TweenTransitionEnum.Elastic => Tween.TransitionType.Elastic,
-				TweenTransitionEnum.Cubic => Tween.TransitionType.Cubic,
-				TweenTransitionEnum.Circ => Tween.TransitionType.Circ,
-				TweenTransitionEnum.Bounce => Tween.TransitionType.Bounce,
-				TweenTransitionEnum.Back => Tween.TransitionType.Back,
-				TweenTransitionEnum.Spring => Tween.TransitionType.Spring,
-				_ => throw new ArgumentOutOfRangeException(nameof(trans), "Easing transition is out of range"),
-			};
-			tween.SetTrans(t);
+			Transition = trans;
 			return this;
 		}
 
