@@ -20,11 +20,11 @@ public partial class UITextInput : UIView
 	private Color _textColor;
 	private float _fontSize;
 	private TextHorizontalAlignmentEnum _justify;
-	private bool _isMultiline;
+	private bool _multiLine;
 	private string _placeholder = "";
 	private Color _placeholderColor;
 	private Color _readOnlyColor;
-	private bool _isReadOnly;
+	private bool _readOnly;
 	private BuiltInFontAsset.BuiltInTextFontPresetEnum _fontPreset;
 	private FontAsset? _fontAsset;
 
@@ -102,14 +102,14 @@ public partial class UITextInput : UIView
 	}
 
 	[Editable, ScriptProperty]
-	public bool IsMultiline
+	public bool MultiLine
 	{
-		get => _isMultiline;
+		get => _multiLine;
 		set
 		{
-			_isMultiline = value;
-			_textEdit.Visible = _isMultiline;
-			_lineEdit.Visible = !_isMultiline;
+			_multiLine = value;
+			_textEdit.Visible = _multiLine;
+			_lineEdit.Visible = !_multiLine;
 			OnPropertyChanged();
 		}
 	}
@@ -154,14 +154,14 @@ public partial class UITextInput : UIView
 	}
 
 	[Editable, ScriptProperty]
-	public bool IsReadOnly
+	public bool ReadOnly
 	{
-		get => _isReadOnly;
+		get => _readOnly;
 		set
 		{
-			_isReadOnly = value;
-			_textEdit.Editable = !_isReadOnly;
-			_lineEdit.Editable = !_isReadOnly;
+			_readOnly = value;
+			_textEdit.Editable = !_readOnly;
+			_lineEdit.Editable = !_readOnly;
 			OnPropertyChanged();
 		}
 	}
@@ -279,9 +279,9 @@ public partial class UITextInput : UIView
 		TextColor = new(0, 0, 0);
 		PlaceholderColor = new(0, 0, 0, 0.5f);
 		ReadOnlyColor = new(0, 0, 0, 0.2f);
-		IsMultiline = false;
+		MultiLine = false;
 		FontSize = 16;
-		IsReadOnly = false;
+		ReadOnly = false;
 
 		base.Init();
 	}
