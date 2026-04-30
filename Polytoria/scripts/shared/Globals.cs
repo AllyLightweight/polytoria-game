@@ -491,6 +491,7 @@ public sealed partial class Globals : Node
 
 		// Starts quit the app
 		_isExiting = true;
+		await AppCloseDimmer.Show();
 
 		try
 		{

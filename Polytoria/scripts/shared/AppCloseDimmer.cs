@@ -3,28 +3,39 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using Godot;
+using System.Threading.Tasks;
 
 namespace Polytoria.Shared;
 
 public partial class AppCloseDimmer : Node
 {
-	public override void _Ready()
+	private static Node Singleton = null!;
+
+	public AppCloseDimmer()
 	{
-		Globals.BeforeQuit += () =>
+		Singleton = this;
+	}
+
+	public static async Task Show()
+	{
+		CanvasLayer layer = new()
 		{
-			CanvasLayer layer = new()
-			{
-				Layer = 10000
-			};
-			ColorRect c = new()
-			{
-				Color = new(0, 0, 0, 0.5f),
-				ZIndex = 1000,
-				TopLevel = true
-			};
-			c.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-			layer.AddChild(c);
-			GetParent().AddChild(layer);
+			Layer = 10000
 		};
+		ColorRect c = new()
+		{
+			Color = new(0, 0, 0, 0.5f),
+			ZIndex = 1000,
+			TopLevel = true
+		};
+		c.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+		layer.AddChild(c);
+		Singleton.GetParent().AddChild(layer);
+
+		// Wait for post render if not in headless
+		if (RenderingServer.Singleton.GetRenderingDevice() != null)
+		{
+			await Singleton.ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+		}
 	}
 }
