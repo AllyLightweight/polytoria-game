@@ -26,6 +26,7 @@ public sealed partial class PlayerDefaults : HiddenBase
 	private bool _useBubbleChat;
 	private bool _autoLoadAppearance;
 	private bool _loadAppearanceTools;
+	private Player.PlayerMovementModeEnum _movementMode;
 
 	[Editable, ScriptProperty]
 	public float MaxHealth
@@ -216,6 +217,17 @@ public sealed partial class PlayerDefaults : HiddenBase
 		}
 	}
 
+	[Editable, ScriptProperty]
+	public Player.PlayerMovementModeEnum MovementMode
+	{
+		get => _movementMode;
+		set
+		{
+			_movementMode = value;
+			OnPropertyChanged();
+		}
+	}
+
 	public Inventory? Inventory => FindChild<Inventory>("Inventory")!;
 
 	public override void Init()
@@ -243,5 +255,6 @@ public sealed partial class PlayerDefaults : HiddenBase
 		UseBubbleChat = true;
 		AutoLoadAppearance = true;
 		LoadAppearanceTools = true;
+		MovementMode = Player.PlayerMovementModeEnum.Default;
 	}
 }

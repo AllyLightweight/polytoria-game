@@ -30,7 +30,7 @@ public sealed partial class Player : NPC
 	internal bool ClimbDebounce = false;
 	internal bool JustFinishedClimbing = false;
 	internal bool IsMoving = false;
-	internal IPlayerMovement PlayerMovement = null!;
+	internal IPlayerMovement? PlayerMovement;
 	internal Vector3 LastVelocity;
 
 	private float _respawnTime = 5.0f;
@@ -46,6 +46,7 @@ public sealed partial class Player : NPC
 	private bool _useBubbleChat = true;
 	private bool _autoLoadAppearance = true;
 	private bool _allowAnimationWhileMoving = false;
+	private PlayerMovementModeEnum _movementMode = PlayerMovementModeEnum.Default;
 	private Team? _team;
 
 	internal bool SprintOverride = false;
@@ -256,6 +257,24 @@ public sealed partial class Player : NPC
 		}
 	}
 
+	[Editable, ScriptProperty]
+	public PlayerMovementModeEnum MovementMode
+	{
+		get => _movementMode;
+		set
+		{
+			_movementMode = value;
+
+			PlayerMovement = _movementMode switch
+			{
+				PlayerMovementModeEnum.Default => new DefaultMovement() { Root = Root, Target = this },
+				_ => null,
+			};
+
+			OnPropertyChanged();
+		}
+	}
+
 	[ScriptProperty]
 	public int NetworkPing { get; private set; }
 
@@ -355,8 +374,6 @@ public sealed partial class Player : NPC
 		_bubbleChat.Visible = _useBubbleChat;
 		GDNode.AddChild(_bubbleChat, @internal: Node.InternalMode.Back);
 		excludedBoundNodes.Add(_bubbleChat);
-
-		PlayerMovement = new DefaultMovement() { Root = Root, Target = this };
 	}
 
 	public override void PreDelete()
@@ -475,8 +492,15 @@ public sealed partial class Player : NPC
 			return;
 		}
 
-		var snapshot = PlayerMovement.SampleInput(delta);
-		PlayerMovement.ProcessInput(snapshot);
+		if (PlayerMovement != null)
+		{
+			var snapshot = PlayerMovement.SampleInput(delta);
+			PlayerMovement.ProcessInput(snapshot);
+		}
+		else
+		{
+			IsMoving = Velocity.Length() > 0.01f;
+		}
 
 		// Stop animation on move
 		if (IsMoving && !AllowAnimationWhileMoving)
@@ -664,6 +688,8 @@ public sealed partial class Player : NPC
 
 		if (@event.IsActionPressed("jump"))
 		{
+			// Ignore jump command if is custom
+			if (MovementMode == PlayerMovementModeEnum.Scripted) return;
 			Jump();
 		}
 		else if (@event.IsActionPressed("toggle_sprint"))
@@ -907,6 +933,7 @@ public sealed partial class Player : NPC
 		UseHeadTurning = Root.PlayerDefaults.UseHeadTurning;
 		UseBubbleChat = Root.PlayerDefaults.UseBubbleChat;
 		AutoLoadAppearance = Root.PlayerDefaults.AutoLoadAppearance;
+		MovementMode = Root.PlayerDefaults.MovementMode;
 
 		if (Character is PolytorianModel ptmodel)
 		{
@@ -1007,5 +1034,11 @@ public sealed partial class Player : NPC
 		{
 			Kick("You have been kicked by game administrator.");
 		}
+	}
+
+	public enum PlayerMovementModeEnum
+	{
+		Default,
+		Scripted
 	}
 }
