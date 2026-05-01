@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://c18hvvl5m6sqa"]
 
-[ext_resource type="Shader" uid="uid://dylteiumvf3c7" path="res://shaders/part.gdshader" id="1_n6agm"]
+[ext_resource type="Shader" uid="uid://dylteiumvf3c7" path="res://resources/shaders/part/part.gdshader" id="1_n6agm"]
 [ext_resource type="Texture2D" uid="uid://bd1rxfnd3sysk" path="res://assets/textures/parts/Marble/albedo.jpg" id="1_ninq6"]
 [ext_resource type="Texture2D" uid="uid://dj7ob7cge1x35" path="res://assets/textures/parts/Marble/orm.jpg" id="3_n0jwj"]
 

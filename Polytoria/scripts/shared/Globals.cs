@@ -338,7 +338,7 @@ public sealed partial class Globals : Node
 		mat = ResourceLoader.Load<Material>($"res://resources/materials/parts/{material}.tres", cacheMode: ResourceLoader.CacheMode.IgnoreDeep);
 		if (!isOpaque && mat is ShaderMaterial shadMat && shadMat.Shader.ResourcePath.EndsWith("part.gdshader"))
 		{
-			Shader shader = ResourceLoader.Load<Shader>("res://shaders/part_transparent.gdshader", cacheMode: ResourceLoader.CacheMode.IgnoreDeep);
+			Shader shader = ResourceLoader.Load<Shader>("res://resources/shaders/part/part_transparent.gdshader", cacheMode: ResourceLoader.CacheMode.IgnoreDeep);
 			shadMat.Shader = shader;
 		}
 		_materialCache[(material, isOpaque)] = mat;

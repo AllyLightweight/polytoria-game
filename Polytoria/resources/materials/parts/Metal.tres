@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://cjnrojfxnadad"]
 
 [ext_resource type="Texture2D" uid="uid://c73qdy128y3r1" path="res://assets/textures/parts/Metal/albedo.jpg" id="1_ajs75"]
-[ext_resource type="Shader" uid="uid://dylteiumvf3c7" path="res://shaders/part.gdshader" id="1_n12of"]
+[ext_resource type="Shader" uid="uid://dylteiumvf3c7" path="res://resources/shaders/part/part.gdshader" id="1_n12of"]
 [ext_resource type="Texture2D" uid="uid://b04ptso5l3fxm" path="res://assets/textures/parts/Metal/orm.jpg" id="3_g5hof"]
 
 [resource]
