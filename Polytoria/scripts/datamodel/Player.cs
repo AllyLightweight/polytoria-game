@@ -352,6 +352,12 @@ public sealed partial class Player : NPC
 		"point",
 	];
 
+	public override void InitGDNode()
+	{
+		base.InitGDNode();
+		CharBody3D.CollisionLayer = 2;
+		CharBody3D.CollisionMask = 3;
+	}
 
 	public override void Init()
 	{

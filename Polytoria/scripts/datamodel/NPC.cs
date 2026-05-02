@@ -415,7 +415,7 @@ public partial class NPC : Physical
 
 	public override Node CreateGDNode()
 	{
-		return new CharacterBody3D() { FloorMaxAngle = 80f };
+		return new CharacterBody3D() { FloorMaxAngle = Mathf.DegToRad(80f) };
 	}
 
 	public override void InitGDNode()
