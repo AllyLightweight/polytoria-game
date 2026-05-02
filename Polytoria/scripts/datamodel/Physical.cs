@@ -284,6 +284,7 @@ public partial class Physical : Dynamic
 
 	public override void EnterTree()
 	{
+		PhysicalRoot = null;
 		Instance? current = Parent;
 
 		// Find physical until parent is not physical (top physical as root)
@@ -648,10 +649,10 @@ public partial class Physical : Dynamic
 
 	private void CreateAreaShape(CollisionShape3D origin)
 	{
-		if (PhysicalArea == null || !Node.IsInstanceValid(origin)) return;
+		if (!Node.IsInstanceValid(origin)) return;
 
 		// If is hidden, don't create area shape yet
-		if (IsHidden)
+		if (IsHidden && PhysicalRoot == null)
 		{
 			_pendingAreaShapes.Add(origin);
 			return;
@@ -770,7 +771,7 @@ public partial class Physical : Dynamic
 
 	private void CreateAreaShapeInternal(CollisionShape3D origin)
 	{
-		if (PhysicalArea == null || !Node.IsInstanceValid(origin) || origin.Shape == null) return;
+		if (!Node.IsInstanceValid(origin) || origin.Shape == null) return;
 
 		Shape3D sharedShape = origin.Shape;
 		List<Node> createdNodes = [];
@@ -805,8 +806,12 @@ public partial class Physical : Dynamic
 			return newShape;
 		}
 
-		var areaShape = CreateLinkedShape(PhysicalArea);
-		AreaCollisionShapes.Add(areaShape);
+		// Handle Physical Area
+		if (PhysicalArea != null)
+		{
+			var areaShape = CreateLinkedShape(PhysicalArea);
+			AreaCollisionShapes.Add(areaShape);
+		}
 
 		// Handle Physical Root
 		if (PhysicalRoot != null)
