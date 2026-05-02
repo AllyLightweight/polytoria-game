@@ -342,6 +342,7 @@ public sealed partial class Text3D : Dynamic
 			_subViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.WhenVisible;
 			_richLabel.Reparent(_subViewport);
 			_richLabel.Visible = true;
+			_richLabel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 		}
 		else
 		{
