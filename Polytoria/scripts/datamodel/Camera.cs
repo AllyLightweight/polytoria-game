@@ -51,7 +51,7 @@ public sealed partial class Camera : Dynamic
 	private Vector2 _currentRotation = Vector2.Zero;
 	private Vector3 _currentMovement = Vector3.Zero;
 
-	private Vector3 _targetRotation = Vector3.Zero;
+	private Vector3 _targetRotation = new(0, 180, 0);
 	private float _targetZoom = DefaultZoomDistance;
 	private float _currentZoom = DefaultZoomDistance;
 	private float _distance = DefaultZoomDistance;
