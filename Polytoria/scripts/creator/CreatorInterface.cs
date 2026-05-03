@@ -59,7 +59,7 @@ public partial class CreatorInterface : Control, IScriptObject
 	{
 		get
 		{
-			if (TempMirrorSnap)
+			if (TempDisableSnap)
 			{
 				return MoveSnapEnabled ? 0.01f : UserMoveSnapping;
 			}
@@ -75,7 +75,7 @@ public partial class CreatorInterface : Control, IScriptObject
 	{
 		get
 		{
-			if (TempMirrorSnap)
+			if (TempDisableSnap)
 			{
 				return RotateSnapEnabled ? 0.01f : UserRotateSnapping;
 			}
@@ -85,7 +85,7 @@ public partial class CreatorInterface : Control, IScriptObject
 
 	[ScriptProperty] public float UserRotateSnapping { get; internal set; } = 45;
 
-	public static bool TempMirrorSnap => Input.IsKeyPressed(Key.Alt);
+	public static bool TempDisableSnap => Input.IsKeyPressed(Key.Alt);
 
 	public CreatorService Service = null!;
 	public Instance? PendingCreateScriptAt;
