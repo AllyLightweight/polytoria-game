@@ -1,4 +1,5 @@
 using Godot;
+using Polytoria.Datamodel;
 using Polytoria.Shared;
 using Polytoria.Shared.Settings;
 using System;
@@ -21,6 +22,8 @@ public sealed partial class ClientSettingsService : Node, ISettingsContext
 
 	public event Action<SettingChangedEvent>? Changed;
 
+	public ClientEntry Entry { get; init; } = null!;
+
 	public ClientSettingsService()
 	{
 		Instance = this;
@@ -31,6 +34,79 @@ public sealed partial class ClientSettingsService : Node, ISettingsContext
 		bool settingsExists = FileAccess.FileExists(SettingsPath);
 		Load();
 		ApplyDefaults();
+
+		if (!settingsExists)
+		{
+			GraphicsPreset autoPreset = GraphicsAutoDetector.Detect();
+			ApplyGraphicsPreset(autoPreset);
+
+			GraphicsBenchmarker benchmarker = new GraphicsBenchmarker();
+			AddChild(benchmarker);
+
+			PT.Print("Graphics auto-detection selected preset: " + autoPreset);
+			Entry.NetworkEssentialsReady += () =>
+			{
+				World? world = World.Current;
+				if (world == null)
+				{
+					PT.PrintErr("Cannot profile graphics because there is no world");
+					return;
+				}
+
+				bool profiling = false;
+
+				void StartProfile()
+				{
+					if (profiling)
+					{
+						return;
+					}
+					profiling = true;
+					GraphicsPreset current = Get<GraphicsPreset>(ClientSettingKeys.Graphics.Preset);
+					if (current == GraphicsPreset.Custom) return;
+					PT.Print("Starting graphics benchmark...");
+					benchmarker.Start();
+					benchmarker.Finished += (avgFps) =>
+					{
+						profiling = false;
+						PT.Print($"Graphics benchmark finished. Average FPS: {avgFps}");
+						if (avgFps <= 40f)
+						{
+							GraphicsPreset lower = current switch
+							{
+								GraphicsPreset.Ultra => GraphicsPreset.High,
+								GraphicsPreset.High => GraphicsPreset.Medium,
+								GraphicsPreset.Medium => GraphicsPreset.Low,
+								_ => current
+							};
+
+							ApplyGraphicsPreset(lower);
+						}
+						else if (avgFps >= 55f)
+						{
+							GraphicsPreset higher = current switch
+							{
+								GraphicsPreset.Low => GraphicsPreset.Medium,
+								GraphicsPreset.Medium => GraphicsPreset.High,
+								_ => current
+							};
+
+							ApplyGraphicsPreset(higher);
+						}
+					};
+				}
+
+
+				if (world.IsLoaded)
+				{
+					StartProfile();
+				}
+				else
+				{
+					world.Loaded.Connect(StartProfile);
+				}
+			};
+		}
 
 		RenderingMethodOption renderingMethod = Get<RenderingMethodOption>(ClientSettingKeys.Graphics.RenderingMethod);
 		RenderingDeviceSwitcher.RenderingDeviceEnum gdMethod = renderingMethod switch
@@ -45,8 +121,6 @@ public sealed partial class ClientSettingsService : Node, ISettingsContext
 
 		if (!settingsExists)
 		{
-			GraphicsPreset defaultPreset = Get<GraphicsPreset>(ClientSettingKeys.Graphics.Preset);
-			ApplyGraphicsPreset(defaultPreset);
 			QueueSave();
 		}
 	}
@@ -116,6 +190,7 @@ public sealed partial class ClientSettingsService : Node, ISettingsContext
 
 	private void ApplyGraphicsPreset(GraphicsPreset preset)
 	{
+		PT.Print($"Applying graphics preset: {preset}");
 		if (preset == GraphicsPreset.Custom)
 		{
 			return;

@@ -190,7 +190,8 @@ public sealed partial class ClientEntry : Node3D
 		// Setup essentials 
 		ClientSettingsService settings = new()
 		{
-			Name = "ClientSettings"
+			Name = "ClientSettings",
+			Entry = this
 		};
 		AddChild(settings, true, InternalMode.Front);
 
