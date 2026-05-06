@@ -1,5 +1,5 @@
-using System;
 using Godot;
+using System;
 
 namespace Polytoria.Client.Settings;
 

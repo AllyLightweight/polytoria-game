@@ -1,7 +1,6 @@
-using System.Linq;
 using Godot;
-using Polytoria.Datamodel;
 using Polytoria.Shared;
+using System.Linq;
 
 namespace Polytoria.Client.Settings;
 
