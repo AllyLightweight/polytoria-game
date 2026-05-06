@@ -185,7 +185,14 @@ public partial class Physical : Dynamic
 		{
 			// Stop collision override if player's not ready
 			if (this is Player plr && !plr.IsReady) { return; }
-			SetCollisionDisabled(!_canCollide);
+			bool setTo = !_canCollide;
+			SetCollisionDisabled(setTo);
+
+			if (setTo)
+			{
+				// Ensure touch area on non collide-able physicals, so other can still detect this object
+				EnsureTouchArea();
+			}
 		}
 		else
 		{
