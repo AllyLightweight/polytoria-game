@@ -1,20 +1,49 @@
-# [Replace this with title]
+## Summary
 
-[Replace this with the information about what you have changed in this pull request]
+<!-- What changed and why? Please provide a brief description of the changes made in this pull request. -->
 
-## Screenshots
+## Related issue or discussion
 
-[Replace this with the screenshots of the visual changes (or demonstration) made in this pull request, feel free to delete this section if there's none.]
+Fixes #
+Related to #
 
-## Todo
+## Type of change
 
-Check out things to do before doing a pull request:
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Refactor
+- [ ] Tests
+- [ ] Build/export/tooling
+- [ ] Other
 
-- [ ] Added in-code documentation (wherever needed)
-- [ ] Ran `dotnet format Polytoria.sln` to ensure code formatting
+## Area affected
 
-## Use of AI/LLMs
+- [ ] Client
+- [ ] Creator
+- [ ] Server
+- [ ] Networking / replication
+- [ ] Scripting API
+- [ ] Scripting runtimes
+- [ ] Datamodel
+- [ ] UI / UX
+- [ ] Build / export
+- [ ] Other
 
-If you used AI or LLMs while working on this pull request, please describe how they were used. (for example: documenting, refactoring, small snippets or large section of code). If no AI tools were used, feel free to remove this section.
+## Checklist
 
-Providing this information helps reviewers better understand the development process/responsible use of AI tools.
+- [ ] I have read the [contributing guidelines](https://v2docs.polytoria.com/contributing/)
+- [ ] Added in-code documentation (where needed)
+- [ ] Ran `dotnet restore`
+- [ ] Ran `dotnet format`
+- [ ] Ran `dotnet build`
+- [ ] Ran `dotnet test --project Polytoria.Tests/Polytoria.Tests.csproj`
+- [ ] Tested the changes in a local environment
+- [ ] Ensured all commits are [signed off](https://v2docs.polytoria.com/contributing/software/contributor/dco/)
+
+## Screenshots / video
+
+<!-- Required for visual changes. Provide screenshots or a short video demonstrating the changes. -->
+
+## AI/LLM use
+
+<!-- Describe AI use, or write "None" if not applicable -->
