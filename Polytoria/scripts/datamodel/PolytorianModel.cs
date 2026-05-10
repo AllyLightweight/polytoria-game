@@ -14,7 +14,6 @@ using Polytoria.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ZstdSharp.Unsafe;
 
 namespace Polytoria.Datamodel;
 
