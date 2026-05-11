@@ -424,23 +424,14 @@ public sealed partial class PolytorianModel : CharacterModel
 			float current = (float)AnimTree.Get(propName);
 
 			float targetBlendSpeed = BlendSpeed;
-			float newValue;
+			float newValue, interpT;
 
 			if (propName.Contains("Look"))
 			{
 				targetBlendSpeed = LookBlendSpeed;
 
-				newValue = Mathf.Lerp(current, target, (float)delta * targetBlendSpeed);
-
-				//To fix the turn overshooting the target on low framerates
-				if (target > 0)
-				{
-					newValue = Mathf.Clamp(newValue, 0f, target);
-				}
-				else
-				{
-					newValue = Mathf.Clamp(newValue, target, 0f);
-				}
+				float lerpT = Mathf.Clamp((float)delta * targetBlendSpeed, 0, 1);
+				newValue = Mathf.Lerp(current, target, lerpT);
 			}
 			else
 			{
