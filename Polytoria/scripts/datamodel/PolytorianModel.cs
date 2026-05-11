@@ -424,7 +424,7 @@ public sealed partial class PolytorianModel : CharacterModel
 			float current = (float)AnimTree.Get(propName);
 
 			float targetBlendSpeed = BlendSpeed;
-			float newValue, interpT;
+			float newValue;
 
 			if (propName.Contains("Look"))
 			{
